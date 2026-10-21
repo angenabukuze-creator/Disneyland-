@@ -258,7 +258,7 @@ const m=String(err?.message||err||'Erreur inconnue');
 if(/invalid login credentials/i.test(m))return 'E-mail ou code incorrect.';
 if(/email not confirmed/i.test(m))return 'Confirme ton adresse e-mail.';
 if(/user already registered/i.test(m))return 'Compte déjà enregistré. Connecte-toi.';
-if(/row-level security|permission denied/i.test(m))return 'Supabase refuse cette opération. Vérifie les règles de sécurité de la table.';
+if(/row-level security|permission denied/i.test(m))return 'Opération refusée par Supabase. Vérifie les autorisations de la table.';
 if(/does not exist|column .* not found/i.test(m))return 'Une colonne requise est absente dans Supabase.';
 return m;
 }
@@ -312,8 +312,16 @@ $('launchCounter').textContent=diff>0
 updateLaunch();
 setInterval(updateLaunch,60000);
 
-/* Inscription : le code est conservé dans les métadonnées Auth,
-   puis tenté dans le profil une fois celui-ci créé. */
+async function saveReferralCode(code){
+if(!currentUser||!code)return;
+const normalized=normalizeCode(code);
+const {error}=await supabase.from('disney_profiles')
+.update({referral_code_used:normalized})
+.eq('id',currentUser.id);
+if(error)console.warn('Enregistrement du parrainage impossible:',error.message);
+else if(profile)profile.referral_code_used=normalized;
+}
+
 $('registerForm').addEventListener('submit',async e=>{
 e.preventDefault();
 clearMessage('registerMessage');
@@ -330,6 +338,9 @@ message('registerMessage','Le code doit contenir 6 chiffres.');return;
 if(password!==confirm){
 message('registerMessage','Les codes ne correspondent pas.');return;
 }
+if(referral&&profile&&normalizeCode(profile.referral_code)===referral){
+message('registerMessage','Tu ne peux pas utiliser ton propre code de parrainage.');return;
+}
 
 $('registerBtn').disabled=true;
 try{
@@ -345,9 +356,7 @@ await loadProfile();
 if(referral)await saveReferralCode(referral);
 await enterApp();
 }else{
-message('registerMessage',
-'Compte créé. Vérifie ton e-mail si une confirmation est demandée. Le code de parrainage a été envoyé avec les informations du compte.',
-'success');
+message('registerMessage','Compte créé. Si Supabase demande une confirmation, vérifie ta boîte e-mail puis connecte-toi.','success');
 }
 }catch(err){
 message('registerMessage',friendlyError(err));
@@ -355,16 +364,6 @@ message('registerMessage',friendlyError(err));
 $('registerBtn').disabled=false;
 }
 });
-
-async function saveReferralCode(code){
-if(!currentUser||!code)return;
-const normalized=normalizeCode(code);
-const {error}=await supabase.from('disney_profiles')
-.update({referral_code_used:normalized})
-.eq('id',currentUser.id);
-if(error)console.warn('Le code est présent dans les métadonnées Auth, mais la mise à jour du profil a échoué:',error.message);
-else if(profile)profile.referral_code_used=normalized;
-}
 
 $('loginForm').addEventListener('submit',async e=>{
 e.preventDefault();
@@ -401,9 +400,8 @@ async function loadProfile(){
 const {data,error}=await supabase.from('disney_profiles')
 .select('*').eq('id',currentUser.id).maybeSingle();
 if(error)throw error;
-if(!data)throw new Error('Profil absent dans disney_profiles. Vérifie la création automatique du profil dans Supabase.');
+if(!data)throw new Error('Profil absent dans disney_profiles.');
 profile=data;
-
 if(!profile.referral_code_used&&currentUser.user_metadata?.referral_code_used){
 profile.referral_code_used=currentUser.user_metadata.referral_code_used;
 }
@@ -535,7 +533,6 @@ container.appendChild(box);
 }catch(err){container.textContent=friendlyError(err);}
 };
 
-/* Équipe : niveaux calculés à partir des codes de parrainage réellement enregistrés. */
 window.loadTeam=async()=>{
 clearMessage('teamMessage');
 ['teamRegistered','teamValidated','countLevel1','countLevel2','countLevel3'].forEach(id=>$(id).textContent='0');
@@ -555,29 +552,17 @@ try{
 const {data:rows,error}=await supabase.from('disney_profiles').select('*').limit(1000);
 if(error)throw error;
 const all=rows||[];
-if(!all.length){
-message('teamMessage','Aucun profil visible. Vérifie les règles de lecture Supabase.');
-return;
-}
-
 const referralColumns=['referral_code_used','referred_by','referrer_code','referred_by_code','sponsor_code'];
-const available=Object.keys(all[0]);
+const available=Object.keys(all[0]||{});
 const referralColumn=referralColumns.find(c=>available.includes(c));
 
-if(!referralColumn){
-message('teamMessage','La table ne possède pas de colonne de parrainage reconnue.');
+if(!all.length||!referralColumn){
+renderEmptyTeam();
 return;
 }
 
-/* Les codes de parrainage sont uniques ; on ne compte pas ton propre profil. */
 const codeOf=row=>normalizeCode(row.referral_code);
 const sponsorOf=row=>normalizeCode(row[referralColumn]||row.user_metadata?.referral_code_used);
-const byCode=new Map();
-all.forEach(row=>{
-const code=codeOf(row);
-if(code&&!byCode.has(code))byCode.set(code,row);
-});
-
 const level1=all.filter(row=>row.id!==currentUser.id&&sponsorOf(row)===myCode);
 const codes1=new Set(level1.map(codeOf).filter(Boolean));
 const level2=all.filter(row=>row.id!==currentUser.id&&codes1.has(sponsorOf(row)));
@@ -588,6 +573,7 @@ function isValidated(row){
 return row.status==='validated'||row.status==='approved'||
 row.is_validated===true||row.verified===true;
 }
+
 function renderMembers(rows,targetId,level){
 const target=$(targetId);
 target.replaceChildren();
@@ -626,14 +612,25 @@ $('teamRegistered').textContent=members.length;
 $('teamValidated').textContent=members.filter(isValidated).length;
 
 if(members.length){
-message('teamMessage','Équipe chargée : '+level1.length+' membre(s) au niveau 1, '+level2.length+' au niveau 2 et '+level3.length+' au niveau 3.','success');
+message('teamMessage','Équipe chargée avec succès.','success');
 }else{
-message('teamMessage','Aucun membre lié à ton code trouvé. Les comptes dont referral_code_used est NULL ne peuvent pas être attribués automatiquement à un parrain. Les profils visibles dépendent aussi des règles de lecture Supabase.');
+renderEmptyTeam();
 }
 }catch(err){
 message('teamMessage',friendlyError(err));
 }
 };
+
+function renderEmptyTeam(){
+['listLevel1','listLevel2','listLevel3'].forEach(id=>{
+const el=$(id);
+el.replaceChildren();
+const p=document.createElement('p');
+p.className='small';
+p.textContent='Aucun membre trouvé à ce niveau.';
+el.appendChild(p);
+});
+}
 
 $('logoutBtn').addEventListener('click',async()=>{
 const {error}=await supabase.auth.signOut();
