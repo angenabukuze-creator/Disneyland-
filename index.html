@@ -37,6 +37,12 @@ nav button{background:white;color:#111;font-size:10px;font-weight:normal;padding
 nav span{display:block;font-size:20px;margin-bottom:3px}
 a{color:#111;overflow-wrap:anywhere}
 .stat{background:#f3f4f6;padding:13px;border-radius:8px;margin-top:10px}
+.referral-level{background:#fff;border:1px solid #ddd;border-radius:10px;padding:15px;margin-top:12px}
+.referral-level h3{margin:0 0 8px}
+.referral-percent{font-size:27px;font-weight:bold;margin:5px 0}
+.level-one{border-left:5px solid #111}
+.level-two{border-left:5px solid #666}
+.level-three{border-left:5px solid #999}
 </style>
 </head>
 
@@ -165,15 +171,41 @@ a{color:#111;overflow-wrap:anywhere}
 
 <section id="teamPage" class="card hidden">
 <h2>👥 MON ÉQUIPE</h2>
+
 <div class="stat">Mon code de parrainage : <b id="referralCode">—</b></div>
 <button onclick="copyReferral()">COPIER MON CODE</button>
+
 <div class="stat">Lien d'inscription personnel :</div>
 <input id="referralLink" readonly>
 <button onclick="copyReferralLink()">COPIER LE LIEN D'INSCRIPTION</button>
+
+<h3>💰 POURCENTAGES DE PARRAINAGE</h3>
+
+<div class="referral-level level-one">
+<h3>🥇 NIVEAU 1 — PARRAINAGE DIRECT</h3>
+<div class="referral-percent">20 %</div>
+<p>Commission prévue sur les opérations éligibles des membres que tu parraines directement.</p>
+<div>Commissions du niveau 1 : <b id="commissionLevel1">0 FC</b></div>
+</div>
+
+<div class="referral-level level-two">
+<h3>🥈 NIVEAU 2 — DEUXIÈME NIVEAU</h3>
+<div class="referral-percent">3 %</div>
+<p>Commission prévue sur les opérations éligibles du deuxième niveau de ton équipe.</p>
+<div>Commissions du niveau 2 : <b id="commissionLevel2">0 FC</b></div>
+</div>
+
+<div class="referral-level level-three">
+<h3>🥉 NIVEAU 3 — TROISIÈME NIVEAU</h3>
+<div class="referral-percent">1 %</div>
+<p>Commission prévue sur les opérations éligibles du troisième niveau de ton équipe.</p>
+<div>Commissions du niveau 3 : <b id="commissionLevel3">0 FC</b></div>
+</div>
+
 <div class="stat">Membres inscrits : <b id="teamRegistered">0</b></div>
 <div class="stat">Membres validés : <b id="teamValidated">0</b></div>
-<div class="stat">Commission d'équipe : <b>3 %</b></div>
-<div class="stat">Revenus de l'équipe : <b id="teamIncome">0 FC</b></div>
+<div class="stat">Revenus totaux de l'équipe : <b id="teamIncome">0 FC</b></div>
+
 <div id="teamList"></div>
 <div id="teamMessage" class="message hidden"></div>
 </section>
@@ -501,6 +533,9 @@ clearMessage('teamMessage');
 $('teamRegistered').textContent='0';
 $('teamValidated').textContent='0';
 $('teamIncome').textContent=money(0);
+$('commissionLevel1').textContent=money(0);
+$('commissionLevel2').textContent=money(0);
+$('commissionLevel3').textContent=money(0);
 $('teamList').replaceChildren();
 
 if(!currentUser||!profile)return;
@@ -516,8 +551,6 @@ $('referralCode').textContent=profile.referral_code;
 $('referralLink').value=location.origin+location.pathname+'?ref='+encodeURIComponent(profile.referral_code);
 
 try{
-/* Utilise seulement les colonnes nécessaires pour identifier les profils.
-   La colonne de parrainage est détectée à partir du schéma disponible. */
 const {data:rows,error}=await supabase.from('disney_profiles').select('*').limit(500);
 if(error)throw error;
 
@@ -533,7 +566,7 @@ break;
 }
 
 if(!referralColumn){
-message('teamMessage','Le code personnel est disponible, mais la colonne reliant les filleuls au parrain doit être configurée dans Supabase.');
+message('teamMessage','Les taux de parrainage sont affichés. Pour calculer les commissions et relier les membres aux trois niveaux, la structure de parrainage doit être configurée dans Supabase.');
 return;
 }
 
@@ -552,6 +585,7 @@ box.className='vip';
 box.textContent=(member.full_name||'Membre')+' — '+(valid.includes(member)?'Validé':'En attente');
 $('teamList').appendChild(box);
 });
+
 }catch(err){
 message('teamMessage',friendlyError(err));
 }
