@@ -161,7 +161,6 @@ hr{border:0;border-top:1px solid #eee;margin:18px 0}
 
 <section id="vipPage" class="card hidden">
 <h2>📦 PRODUITS VIP</h2>
-<p class="small">Montants indicatifs, non garantis. Aucun versement automatique n'est effectué.</p>
 <div id="vipList"></div>
 </section>
 
@@ -218,7 +217,6 @@ hr{border:0;border-top:1px solid #eee;margin:18px 0}
 <label>Lien du groupe WhatsApp officiel</label><input id="settingWhatsApp" type="url" placeholder="https://chat.whatsapp.com/...">
 <label>Lien du groupe Telegram officiel</label><input id="settingTelegram" type="url" placeholder="https://t.me/...">
 <label>Lien du service client</label><input id="settingSupport" type="url" placeholder="https://...">
-<p class="small">Les liens et les numéros de paiement existants sont conservés s'ils ne sont pas modifiés.</p>
 <label>État du site</label><select id="settingOpen"><option value="true">Site ouvert</option><option value="false">Site fermé</option></select>
 <label>Couleur principale</label><input id="settingThemeColor" type="color" value="#e91e63">
 <label>Couleur de fond</label><input id="settingBackgroundColor" type="color" value="#f5f5f5">
@@ -229,7 +227,6 @@ hr{border:0;border-top:1px solid #eee;margin:18px 0}
 <label>Numéro M-Pesa</label><input id="settingMpesaNumber" maxlength="30">
 <label>Bénéficiaire M-Pesa</label><input id="settingMpesaName" maxlength="100">
 <hr><h3>📦 Modifier les offres VIP</h3>
-<p class="small">Les changements VIP sont conservés dans le navigateur de cet appareil. Pour les partager entre tous les membres, la base de données doit aussi autoriser leur enregistrement.</p>
 <div id="adminVipEditor"></div>
 <hr><h3>👥 Frais de parrainage</h3>
 <label>Commission niveau 1 (%)</label><input id="settingReferral1" type="number" min="0" max="100" step="0.01" value="20" required>
@@ -811,12 +808,6 @@ if(error)throw error;message('adminMessage','Lien de réinitialisation envoyé s
 }catch(err){message('adminMessage',friendlyError(err));}
 });
 
-/*
- * Sauvegarde tolérante :
- * - n'accède jamais à un champ absent sans vérification ;
- * - ne dépend pas d'une fonction RPC inconnue pour conserver les réglages locaux ;
- * - tente aussi la sauvegarde côté Supabase sans remplacer les liens par des champs vides.
- */
 $('settingsForm').addEventListener('submit',async e=>{
 e.preventDefault();
 if(!isAdmin())return;
@@ -828,98 +819,55 @@ const referral2=Number($('settingReferral2').value);
 const referral3=Number($('settingReferral3').value);
 const withdrawalFee=Number($('settingWithdrawalFee').value);
 const vipDays=Number($('settingVipDays').value);
-
 for(const value of [referral1,referral2,referral3,withdrawalFee]){
 if(!Number.isFinite(value)||value<0||value>100)throw new Error('Les pourcentages doivent être compris entre 0 et 100.');
 }
 if(!Number.isInteger(vipDays)||vipDays<1||vipDays>3650)throw new Error('La durée par défaut doit être comprise entre 1 et 3650 jours.');
-
-const newOffers=readVipEditor().map(v=>({...v,days:v.days||vipDays}));
-const previous=getLocalSettings();
-
+const newOffers=readVipEditor();
 const newSettings={
-...previous,
+id:1,
 platform_name:$('settingName').value.trim()||'DISNEYLAND RDC',
-whatsapp_url:$('settingWhatsApp').value.trim()||previous.whatsapp_url||DEFAULT_WHATSAPP,
-telegram_url:$('settingTelegram').value.trim()||previous.telegram_url||'',
-support_url:$('settingSupport').value.trim()||previous.support_url||'',
+whatsapp_url:$('settingWhatsApp').value.trim()||DEFAULT_WHATSAPP,
+telegram_url:$('settingTelegram').value.trim(),
+support_url:$('settingSupport').value.trim(),
 site_open:$('settingOpen').value==='true',
 theme_color:$('settingThemeColor').value||'#e91e63',
 background_color:$('settingBackgroundColor').value||'#f5f5f5',
-airtel_number:$('settingAirtelNumber').value.trim()||previous.airtel_number||DEFAULT_AIRTEL,
-airtel_name:$('settingAirtelName').value.trim()||previous.airtel_name||'YVETTE',
-orange_number:$('settingOrangeNumber').value.trim()||previous.orange_number||DEFAULT_ORANGE,
-orange_name:$('settingOrangeName').value.trim()||previous.orange_name||'JACQUELINE',
-mpesa_number:$('settingMpesaNumber').value.trim()||previous.mpesa_number||DEFAULT_MPESA,
-mpesa_name:$('settingMpesaName').value.trim()||previous.mpesa_name||'REGINA',
+airtel_number:$('settingAirtelNumber').value.trim()||DEFAULT_AIRTEL,
+airtel_name:$('settingAirtelName').value.trim()||'YVETTE',
+orange_number:$('settingOrangeNumber').value.trim()||DEFAULT_ORANGE,
+orange_name:$('settingOrangeName').value.trim()||'JACQUELINE',
+mpesa_number:$('settingMpesaNumber').value.trim()||DEFAULT_MPESA,
+mpesa_name:$('settingMpesaName').value.trim()||'REGINA',
 vip_settings:newOffers,
 referral_commission_1:referral1,
 referral_commission_2:referral2,
 referral_commission_3:referral3,
 withdrawal_fee:withdrawalFee,
-vip_validity_days:vipDays
+vip_validity_days:vipDays,
+updated_at:new Date().toISOString()
 };
 
-/* Conserver immédiatement les réglages sur cet appareil. */
-localStorage.setItem('disneyland_admin_settings',JSON.stringify(newSettings));
-settings={...(settings||{}),...newSettings};
+/* Sauvegarde dans Supabase pour tous les membres. */
+const {error}=await supabase.from('disney_settings').upsert(newSettings,{onConflict:'id'});
+if(error)throw error;
+
+settings=newSettings;
 localFinancialSettings=newSettings;
 vipOffers=normalizeVipOffers(newOffers);
 applyTheme();
 renderAdminVipEditor();
-loadVIP();
 renderPublicContacts();
 renderPaymentNumbers();
-
-/* Tentative de sauvegarde générale côté Supabase.
-   Si la fonction existe, les contacts et numéros sont également synchronisés. */
-let remoteSaved=false;
-try{
-const {error}=await supabase.rpc('disney_admin_update_full_settings',{
-p_name:newSettings.platform_name,
-p_whatsapp:newSettings.whatsapp_url,
-p_telegram:newSettings.telegram_url,
-p_support:newSettings.support_url,
-p_site_open:newSettings.site_open,
-p_theme_color:newSettings.theme_color,
-p_background_color:newSettings.background_color,
-p_airtel_number:newSettings.airtel_number,
-p_airtel_name:newSettings.airtel_name,
-p_orange_number:newSettings.orange_number,
-p_orange_name:newSettings.orange_name,
-p_mpesa_number:newSettings.mpesa_number,
-p_mpesa_name:newSettings.mpesa_name
-});
-if(!error)remoteSaved=true;
-else console.warn('Paramètres généraux non synchronisés :',error.message);
-}catch(err){console.warn(err);}
-
-/* Tentative séparée pour les réglages financiers.
-   L'absence de cette fonction ne bloque plus l'enregistrement local. */
-let financialSaved=false;
-try{
-const {error}=await supabase.rpc('update_disney_settings',{
-p_vip_settings:newOffers,
-p_referral_commission_1:referral1,
-p_referral_commission_2:referral2,
-p_referral_commission_3:referral3,
-p_withdrawal_fee:withdrawalFee,
-p_vip_validity_days:vipDays
-});
-if(!error)financialSaved=true;
-else console.warn('Réglages financiers non synchronisés :',error.message);
-}catch(err){console.warn(err);}
-
-if(remoteSaved&&financialSaved){
-message('adminMessage','Tous les paramètres ont été enregistrés dans Supabase.','success');
-}else{
-message('adminMessage','Réglages conservés sur cet appareil. Pour les appliquer à tous les membres, les fonctions et colonnes correspondantes doivent être configurées dans Supabase.','success');
-}
+loadVIP();
+$('headerName').textContent=newSettings.platform_name.replace(/\s+RDC$/i,'');
+document.title=newSettings.platform_name;
+$('welcomeTitle').textContent='Bienvenue sur '+newSettings.platform_name+' 🇨🇩';
+message('adminMessage','Paramètres enregistrés et partagés avec les membres.','success');
 }catch(err){
-message('adminMessage','Enregistrement impossible : '+friendlyError(err));
-}finally{
-$('saveSettingsBtn').disabled=false;
-}
+message('adminMessage','Impossible d’enregistrer. Vérifie les droits administrateur et la table disney_settings.');
+console.error(err);
+}finally{$('saveSettingsBtn').disabled=false;}
 });
 
 $('logoutBtn').addEventListener('click',async()=>{
