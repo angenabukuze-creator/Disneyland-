@@ -588,9 +588,8 @@ const box=document.createElement('div');box.className='vip';
 const h=document.createElement('h3');h.textContent=v.name;
 const p=document.createElement('p');p.textContent='Capital : '+money(v.capital)+' · Revenu journalier : '+money(v.daily)+' · Durée : '+v.days+' jours';
 const total=document.createElement('p');total.textContent='Total théorique sur '+v.days+' jours : '+money(v.daily*v.days);
-const note=document.createElement('p');note.className='small';note.textContent="Montants indicatifs, non garantis. Aucun versement automatique n'est effectué.";
 const btn=document.createElement('button');btn.textContent='ACTIVER '+v.name;btn.onclick=()=>activateVIP(v);
-box.append(h,p,total,note,btn);c.appendChild(box);
+box.append(h,p,total,btn);c.appendChild(box);
 });
 }
 window.loadVIP=loadVIP;
@@ -678,9 +677,23 @@ if(d.error)throw d.error;if(w.error)throw w.error;if(s.error)throw s.error;
 c.replaceChildren();
 const rows=[...(d.data||[]).map(x=>({...x,kind:'Dépôt',date:x.created_at})),...(w.data||[]).map(x=>({...x,kind:'Retrait',date:x.created_at})),...(s.data||[]).map(x=>({...x,kind:'Activation '+x.vip_name,amount:x.investment,date:x.activated_at}))].sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
 if(!rows.length){c.textContent='Aucune transaction.';return;}
-rows.forEach(r=>{const b=document.createElement('div');b.className='vip';b.textContent=r.kind+' — '+money(r.amount)+' — '+(r.status||'en attente');c.appendChild(b);});
+rows.forEach(r=>{
+const b=document.createElement('div');b.className='vip';
+const date=document.createElement('p');date.className='small';
+date.textContent='Date et heure : '+formatDateTime(r.date);
+const details=document.createElement('p');
+details.textContent=r.kind+' — '+money(r.amount)+' — '+(r.status||'en attente');
+b.append(details,date);c.appendChild(b);
+});
 }catch(err){c.textContent=friendlyError(err);}
 };
+
+function formatDateTime(value){
+if(!value)return '—';
+const d=new Date(value);
+if(Number.isNaN(d.getTime()))return '—';
+return new Intl.DateTimeFormat('fr-FR',{dateStyle:'short',timeStyle:'short'}).format(d);
+}
 
 window.loadTeam=async()=>{
 clearMessage('teamMessage');$('teamStats').classList.add('hidden');
@@ -704,7 +717,7 @@ const box=document.createElement('div');box.className='member';
 const n=document.createElement('b');n.textContent=m.nom||m.full_name||'Membre';
 const s=document.createElement('p');s.textContent='Statut : '+(m.statut||m.status||'inscrit');
 const d=document.createElement('p');d.textContent='Dépôt validé : '+((m.a_recharge||m.has_approved_deposit)?'Oui':'Non');
-const date=document.createElement('p');date.className='small';date.textContent='Inscription : '+(m.inscrit_le||m.created_at?new Date(m.inscrit_le||m.created_at).toLocaleDateString('fr-FR'):'—');
+const date=document.createElement('p');date.className='small';date.textContent='Inscription : '+(m.inscrit_le||m.created_at?formatDateTime(m.inscrit_le||m.created_at):'—');
 box.append(n,s,d,date);target.appendChild(box);
 });
 $('countLevel1').textContent=members.length;
@@ -735,7 +748,7 @@ rows.forEach(row=>{
 const box=document.createElement('div');box.className='operation';
 const title=document.createElement('h3');title.textContent=(kind==='deposit'?'Dépôt':'Retrait')+' — '+money(row.amount);
 const details=document.createElement('p');details.textContent='Membre ID : '+row.user_id+' · Statut : '+(row.status||'pending')+' · Opérateur : '+(row.operator||'—')+(kind==='deposit'?' · Référence : '+(row.reference||'—'):' · Numéro : '+(row.phone||'—'));
-const date=document.createElement('p');date.className='small';date.textContent='Date : '+(row.created_at?new Date(row.created_at).toLocaleString('fr-FR'):'inconnue');
+const date=document.createElement('p');date.className='small';date.textContent='Date et heure : '+formatDateTime(row.created_at);
 box.append(title,details,date);
 if(row.status==='pending'){
 const yes=document.createElement('button');yes.className='approve';yes.textContent=kind==='deposit'?'VALIDER LE DÉPÔT':'VALIDER LE RETRAIT';yes.onclick=()=>processTransaction(kind,row.id,'approved');
@@ -819,13 +832,14 @@ const referral2=Number($('settingReferral2').value);
 const referral3=Number($('settingReferral3').value);
 const withdrawalFee=Number($('settingWithdrawalFee').value);
 const vipDays=Number($('settingVipDays').value);
+
 for(const value of [referral1,referral2,referral3,withdrawalFee]){
 if(!Number.isFinite(value)||value<0||value>100)throw new Error('Les pourcentages doivent être compris entre 0 et 100.');
 }
 if(!Number.isInteger(vipDays)||vipDays<1||vipDays>3650)throw new Error('La durée par défaut doit être comprise entre 1 et 3650 jours.');
+
 const newOffers=readVipEditor();
 const newSettings={
-id:1,
 platform_name:$('settingName').value.trim()||'DISNEYLAND RDC',
 whatsapp_url:$('settingWhatsApp').value.trim()||DEFAULT_WHATSAPP,
 telegram_url:$('settingTelegram').value.trim(),
@@ -844,30 +858,45 @@ referral_commission_1:referral1,
 referral_commission_2:referral2,
 referral_commission_3:referral3,
 withdrawal_fee:withdrawalFee,
-vip_validity_days:vipDays,
-updated_at:new Date().toISOString()
+vip_validity_days:vipDays
 };
 
-/* Sauvegarde dans Supabase pour tous les membres. */
-const {error}=await supabase.from('disney_settings').upsert(newSettings,{onConflict:'id'});
-if(error)throw error;
+const {data:rpcData,error:rpcError}=await supabase.rpc('disney_admin_update_full_settings',{
+p_name:newSettings.platform_name,
+p_whatsapp:newSettings.whatsapp_url,
+p_telegram:newSettings.telegram_url,
+p_support:newSettings.support_url,
+p_site_open:newSettings.site_open,
+p_theme_color:newSettings.theme_color,
+p_background_color:newSettings.background_color,
+p_airtel_number:newSettings.airtel_number,
+p_airtel_name:newSettings.airtel_name,
+p_orange_number:newSettings.orange_number,
+p_orange_name:newSettings.orange_name,
+p_mpesa_number:newSettings.mpesa_number,
+p_mpesa_name:newSettings.mpesa_name
+});
+if(rpcError)throw rpcError;
 
-settings=newSettings;
-localFinancialSettings=newSettings;
+const {error:financialError}=await supabase.rpc('update_disney_settings',{
+p_vip_settings:newOffers,
+p_referral_commission_1:referral1,
+p_referral_commission_2:referral2,
+p_referral_commission_3:referral3,
+p_withdrawal_fee:withdrawalFee,
+p_vip_validity_days:vipDays
+});
+if(financialError)throw financialError;
+
+settings={...settings,...newSettings};
 vipOffers=normalizeVipOffers(newOffers);
-applyTheme();
-renderAdminVipEditor();
-renderPublicContacts();
-renderPaymentNumbers();
-loadVIP();
-$('headerName').textContent=newSettings.platform_name.replace(/\s+RDC$/i,'');
-document.title=newSettings.platform_name;
-$('welcomeTitle').textContent='Bienvenue sur '+newSettings.platform_name+' 🇨🇩';
-message('adminMessage','Paramètres enregistrés et partagés avec les membres.','success');
+applyTheme();renderAdminVipEditor();loadVIP();renderPublicContacts();renderPaymentNumbers();
+message('adminMessage','Paramètres enregistrés et synchronisés.','success');
 }catch(err){
-message('adminMessage','Impossible d’enregistrer. Vérifie les droits administrateur et la table disney_settings.');
-console.error(err);
-}finally{$('saveSettingsBtn').disabled=false;}
+message('adminMessage','Impossible d’enregistrer : '+friendlyError(err));
+}finally{
+$('saveSettingsBtn').disabled=false;
+}
 });
 
 $('logoutBtn').addEventListener('click',async()=>{
