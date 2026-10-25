@@ -143,7 +143,7 @@ hr{border:0;border-top:1px solid #eee;margin:18px 0}
 <section id="withdrawPage" class="card hidden">
 <h2>Demander un retrait</h2>
 <p>Minimum : 3 000 FC.</p>
-<p class="small">Frais : <b id="withdrawFeeText">8 %</b>.</p>
+<p class="small">Frais : <b id="withdrawFeeText">15 %</b>.</p>
 <form id="withdrawForm">
 <label>Montant en FC</label>
 <input id="withdrawAmount" type="number" min="3000" step="1" required>
@@ -226,22 +226,17 @@ hr{border:0;border-top:1px solid #eee;margin:18px 0}
 <label>Bénéficiaire Orange</label><input id="settingOrangeName" maxlength="100">
 <label>Numéro M-Pesa</label><input id="settingMpesaNumber" maxlength="30">
 <label>Bénéficiaire M-Pesa</label><input id="settingMpesaName" maxlength="100">
-
 <hr><h3>📦 Modifier les offres VIP</h3>
 <div id="adminVipEditor"></div>
-
 <hr><h3>👥 Frais de parrainage</h3>
 <label>Commission niveau 1 (%)</label><input id="settingReferral1" type="number" min="0" max="100" step="0.01" value="20" required>
 <label>Commission niveau 2 (%)</label><input id="settingReferral2" type="number" min="0" max="100" step="0.01" value="3" required>
 <label>Commission niveau 3 (%)</label><input id="settingReferral3" type="number" min="0" max="100" step="0.01" value="1" required>
-
 <hr><h3>💸 Frais de retrait</h3>
 <label>Frais de retrait (%)</label><input id="settingWithdrawalFee" type="number" min="0" max="100" step="0.01" value="15" required>
-
 <hr><h3>💰 Limites de transaction</h3>
 <label>Dépôt minimum (FC)</label><input id="settingDepositMinimum" type="number" min="0" step="1" value="20000" required>
 <label>Retrait minimum (FC)</label><input id="settingWithdrawalMinimum" type="number" min="0" step="1" value="3000" required>
-
 <hr><h3>📅 Validité des offres VIP</h3>
 <label>Durée par défaut (jours)</label><input id="settingVipDays" type="number" min="1" max="3650" step="1" value="90" required>
 <button id="saveSettingsBtn">ENREGISTRER TOUS LES PARAMÈTRES</button>
@@ -269,10 +264,13 @@ const supabase=createClient(
 );
 
 const ADMIN_EMAIL='angenabukuze@gmail.com';
-const DEFAULT_WHATSAPP='https://chat.whatsapp.com/LHZZbS436of0PoWBOtnaZp?s=cl&p=a&mlu=4&ilr=4&iam=0';
-const DEFAULT_TELEGRAM='https://t.me/+mP-Nw_-1xNo0MWQ0';
-const DEFAULT_SUPPORT='https://t.me/Disneylandcd';
-const DEFAULT_AIRTEL='0973087965';
+
+/* NOUVEAU LIEN WHATSAPP DISNEYLAND RDC */
+const DEFAULT_WHATSAPP='https://chat.whatsapp.com/BfmsplXRtMaH9emWzeFP2y?s=cl&p=a&mlu=4&ilr=4&iam=0';
+
+const DEFAULT_TELEGRAM='https://t.me/+dbpiuZGoZUE4MDhk';
+const DEFAULT_SUPPORT='https://t.me/Drcprom';
+const DEFAULT_AIRTEL='0979928885';
 const DEFAULT_ORANGE='089 953 2643';
 const DEFAULT_MPESA='086 182 3718';
 
@@ -372,7 +370,7 @@ document.querySelector('meta[name="theme-color"]').setAttribute('content',settin
 }
 
 function validHttpUrl(value){
-try{const u=new URL(String(value||''));return u.protocol==='https:'||u.protocol==='http:';}
+try{const u=new URL(String(value||''));return u.protocol==='https:'||u.protocol==='http';}
 catch{return false;}
 }
 function renderPublicContacts(){
@@ -394,7 +392,7 @@ c.appendChild(a);
 
 function renderPaymentNumbers(){
 const list=[
-{title:'AIRTEL MONEY',number:settings.airtel_number||DEFAULT_AIRTEL,name:settings.airtel_name||'BASHIMBE BASHANGWA'},
+{title:'AIRTEL MONEY',number:settings.airtel_number||DEFAULT_AIRTEL,name:settings.airtel_name||'YVETTE'},
 {title:'ORANGE MONEY',number:settings.orange_number||DEFAULT_ORANGE,name:settings.orange_name||'JACQUELINE'},
 {title:'M-PESA',number:settings.mpesa_number||DEFAULT_MPESA,name:settings.mpesa_name||'REGINA'}
 ];
@@ -456,6 +454,10 @@ const result=await supabase.from('disney_settings').select('*').eq('id',1).maybe
 if(result.error)console.warn('Paramètres Supabase :',result.error.message);else data=result.data||null;
 }catch(err){console.warn(err);}
 settings={...(data||{}),...local};
+
+/* Force le nouveau lien WhatsApp tant que les paramètres Supabase n'ont pas été corrigés. */
+settings.whatsapp_url=DEFAULT_WHATSAPP;
+
 const savedOffers=settings.vip_settings||local.vip_settings;
 vipOffers=normalizeVipOffers(savedOffers);
 const name=settings.platform_name||'DISNEYLAND RDC';
@@ -464,14 +466,14 @@ document.title=name;$('welcomeTitle').textContent='Bienvenue sur '+name+' 🇨�
 applyTheme();renderPublicContacts();renderPaymentNumbers();
 if(isAdmin()){
 $('settingName').value=settings.platform_name||'DISNEYLAND RDC';
-$('settingWhatsApp').value=settings.whatsapp_url||DEFAULT_WHATSAPP;
+$('settingWhatsApp').value=DEFAULT_WHATSAPP;
 $('settingTelegram').value=settings.telegram_url||DEFAULT_TELEGRAM;
 $('settingSupport').value=settings.support_url||DEFAULT_SUPPORT;
 $('settingOpen').value=String(settings.site_open!==false);
 $('settingThemeColor').value=settings.theme_color||'#e91e63';
 $('settingBackgroundColor').value=settings.background_color||'#f5f5f5';
 $('settingAirtelNumber').value=settings.airtel_number||DEFAULT_AIRTEL;
-$('settingAirtelName').value=settings.airtel_name||'BASHIMBE BASHANGWA';
+$('settingAirtelName').value=settings.airtel_name||'YVETTE';
 $('settingOrangeNumber').value=settings.orange_number||DEFAULT_ORANGE;
 $('settingOrangeName').value=settings.orange_name||'JACQUELINE';
 $('settingMpesaNumber').value=settings.mpesa_number||DEFAULT_MPESA;
@@ -586,7 +588,7 @@ const deposit=approved.find(d=>!used.has(d.id));
 if(!deposit){alert('Ce dépôt a déjà été utilisé pour activer un VIP.');return;}
 const {data,error:rpcError}=await supabase.rpc('disney_activate_vip',{p_deposit_id:deposit.id,p_vip_name:v.name});
 if(rpcError)throw rpcError;
-alert(rpcMessage(data,'VIP activé.'));await loadProfile();displayProfile();await loadMySubscriptions();
+alert(rpcMessage(data,'Demande d’activation envoyée.'));await loadProfile();displayProfile();await loadMySubscriptions();
 }catch(err){alert(friendlyError(err));}
 finally{btns.forEach(b=>b.disabled=false);}
 }
@@ -647,7 +649,7 @@ supabase.from('disney_vip_subscriptions').select('*').eq('user_id',currentUser.i
 ]);
 if(d.error)throw d.error;if(w.error)throw w.error;if(s.error)throw s.error;
 c.replaceChildren();
-const rows=[...(d.data||[]).map(x=>({...x,kind:'Dépôt',date:x.created_at})),...(w.data||[]).map(x=>({...x,kind:'Retrait',date:x.created_at})),...(s.data||[]).map(x=>({...x,kind:'Activation '+x.vip_name,amount:x.investment,date:x.activated_at}))].sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
+const rows=[...(d.data||[]).map(x=>({...x,kind:'Dépôt',date:x.created_at})),...(w.data||[]).map(x=>({...x,kind:'Retrait',date:x.created_at})),...(s.data||[]).map(x=>({...x,kind:'Activation '+x.vip_name,amount:x.investment??x.capital,date:x.activated_at}))].sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
 if(!rows.length){c.textContent='Aucune transaction.';return;}
 rows.forEach(r=>{
 const b=document.createElement('div');b.className='vip';
@@ -808,14 +810,14 @@ if(!Number.isInteger(vipDays)||vipDays<1||vipDays>3650)throw new Error('La duré
 const newOffers=readVipEditor();
 const newSettings={
 platform_name:$('settingName').value.trim()||'DISNEYLAND RDC',
-whatsapp_url:$('settingWhatsApp').value.trim()||DEFAULT_WHATSAPP,
+whatsapp_url:DEFAULT_WHATSAPP,
 telegram_url:$('settingTelegram').value.trim()||DEFAULT_TELEGRAM,
 support_url:$('settingSupport').value.trim()||DEFAULT_SUPPORT,
 site_open:$('settingOpen').value==='true',
 theme_color:$('settingThemeColor').value||'#e91e63',
 background_color:$('settingBackgroundColor').value||'#f5f5f5',
 airtel_number:$('settingAirtelNumber').value.trim()||DEFAULT_AIRTEL,
-airtel_name:$('settingAirtelName').value.trim()||'BASHIMBE BASHANGWA',
+airtel_name:$('settingAirtelName').value.trim()||'YVETTE',
 orange_number:$('settingOrangeNumber').value.trim()||DEFAULT_ORANGE,
 orange_name:$('settingOrangeName').value.trim()||'JACQUELINE',
 mpesa_number:$('settingMpesaNumber').value.trim()||DEFAULT_MPESA,
@@ -861,7 +863,7 @@ settings={...settings,...newSettings};localFinancialSettings={...localFinancialS
 localStorage.setItem('disneyland_admin_settings',JSON.stringify(localFinancialSettings));
 vipOffers=normalizeVipOffers(newOffers);
 applyTheme();renderAdminVipEditor();loadVIP();renderPublicContacts();renderPaymentNumbers();
-message('adminMessage','Paramètres enregistrés. Les liens et valeurs sont appliqués sur cet appareil.','success');
+message('adminMessage','Paramètres enregistrés. Le nouveau lien WhatsApp est appliqué.','success');
 }catch(err){message('adminMessage','Enregistrement incomplet : '+friendlyError(err));}
 finally{$('saveSettingsBtn').disabled=false;}
 });
