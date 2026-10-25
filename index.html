@@ -5,217 +5,282 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#111111">
 <title>DISNEYLAND RDC</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 <style>
-:root{--primary:#d4a83e;--primary-dark:#a77b20;--ink:#151515;--muted:#727782;--bg:#f4f5f7;--card:#fff;--line:#e8e9ed;--green:#17834b;--red:#bd3038;--radius:17px;--shadow:0 8px 28px rgba(17,24,39,.055)}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-size:14px;line-height:1.55}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer;transition:transform .15s,background .15s,opacity .15s}
-button:active{transform:scale(.985)}
-button:disabled{opacity:.55;cursor:wait}
+:root{--pink:#e91e63;--yellow:#ffd600;--black:#111;--white:#fff;--bg:#f5f5f5;--border:#ddd}
+body{margin:0;background:var(--bg);color:#111;font-family:Arial,sans-serif}
+header{background:#111;color:white;text-align:center;padding:18px;border-bottom:4px solid var(--pink)}
+header h1{margin:0;letter-spacing:2px}
+header p{font-size:12px;margin-bottom:0}
+main{max-width:750px;margin:auto;padding:15px 15px 110px}
+.card{background:white;padding:18px;border-radius:14px;margin-bottom:15px;box-shadow:0 2px 8px #00000008}
+h2{font-size:20px}
+label{display:block;font-weight:bold;font-size:13px;margin:13px 0 6px}
+input,select{width:100%;padding:13px;border:1px solid #ddd;border-radius:9px;font-size:15px;background:white;color:#111}
+button{width:100%;padding:13px;border:0;border-radius:9px;background:var(--pink);color:white;font-weight:bold;margin-top:10px;cursor:pointer}
+button:disabled{opacity:.5}
+.secondary{background:white;color:#111;border:2px solid var(--pink)}
+.danger{background:#b91c1c}
+.approve{background:#15803d}
 .hidden{display:none!important}
-header{background:#111;color:#fff;padding:23px 17px 20px;border-bottom:3px solid var(--primary)}
-.header-inner{max-width:790px;margin:auto;display:flex;align-items:center;gap:13px}
-.brand-mark{width:45px;height:45px;border:1px solid #ffffff35;border-radius:14px;display:grid;place-items:center;color:var(--primary);font-size:21px;flex-shrink:0}
-header h1{font-size:20px;letter-spacing:2px;margin:0;font-weight:850}
-header p{font-size:10px;letter-spacing:1.4px;color:#c7c7c7;margin:4px 0 0}
-main{max-width:790px;margin:auto;padding:20px 15px 105px}
-.card{background:var(--card);padding:21px;border:1px solid var(--line);border-radius:var(--radius);margin-bottom:16px;box-shadow:var(--shadow)}
-h2{font-size:20px;letter-spacing:-.4px;margin:0 0 16px;font-weight:800}
-h2 i{color:var(--primary-dark);margin-right:9px}
-h3{font-size:16px;margin:0 0 13px;font-weight:750}
-h4{margin:0 0 10px}
-p{margin:9px 0}
-label{display:block;font-size:12px;font-weight:750;margin:15px 0 7px;color:#35383e}
-input,select,textarea{width:100%;min-height:47px;padding:12px 13px;border:1px solid #dfe1e6;border-radius:10px;background:#fff;color:#161616;outline:none;transition:border .15s,box-shadow .15s}
-textarea{min-height:110px;resize:vertical}
-input:focus,select:focus,textarea:focus{border-color:var(--primary-dark);box-shadow:0 0 0 3px #d4a83e20}
-button{border:0;border-radius:10px;padding:12px 15px;background:var(--ink);color:#fff;font-weight:750;font-size:12px;letter-spacing:.2px;min-height:44px}
-button i{margin-right:7px}
-button.primary{background:var(--primary);color:#171717}
-button.secondary{background:#fff;border:1px solid #dedfe3;color:#222}
-button.danger{background:var(--red);color:#fff}
-button.approve{background:var(--green);color:#fff}
-button:focus-visible{outline:3px solid #d4a83e80;outline-offset:2px}
-form>button{width:100%;margin-top:18px}
-.small{font-size:12px;color:var(--muted);line-height:1.7}
-.message{padding:12px 14px;border-radius:10px;margin-top:13px;overflow-wrap:anywhere;font-size:13px}
-.error{background:#fff0f0;color:#a22129;border:1px solid #f4d1d1}
-.success{background:#edf9f1;color:#146d39;border:1px solid #ccebd6}
-.stat{background:#faf8f1;border:1px solid #eee4c8;padding:13px 15px;border-radius:12px;margin-top:12px;overflow-wrap:anywhere}
-.balance{background:linear-gradient(135deg,#151515,#272727);color:#fff;padding:23px;border-radius:19px;margin-bottom:16px;box-shadow:0 12px 28px #00000015;position:relative;overflow:hidden}
-.balance:after{content:"";position:absolute;width:160px;height:160px;border:1px solid #d4a83e30;border-radius:50%;right:-60px;top:-70px;pointer-events:none}
-.balance-label{font-size:11px;letter-spacing:1.6px;color:#d2d2d2;font-weight:700}
-.amount{font-size:clamp(27px,7vw,36px);font-weight:850;letter-spacing:-1px;margin:8px 0 15px;overflow-wrap:anywhere}
-.balance button{background:var(--primary);color:#171717;position:relative;z-index:1}
-.balance-details{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:18px}
-.balance-detail{border-top:1px solid #ffffff20;padding-top:10px;font-size:12px;color:#d5d5d5}
-.balance-detail b{display:block;color:#fff;font-size:13px;margin-top:3px;overflow-wrap:anywhere}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.grid button{min-height:83px;background:#fff;color:#171717;border:1px solid var(--line);text-align:left;padding:15px;border-radius:13px;box-shadow:0 2px 6px #00000004}
-.grid button i{display:block;color:var(--primary-dark);font-size:19px;margin:0 0 10px}
-.grid button span{font-size:11px;letter-spacing:.4px;font-weight:800}
-.grid button:hover{border-color:#d4a83e;transform:translateY(-1px)}
-.vip,.operation{background:#fff;border:1px solid var(--line);border-radius:13px;padding:16px;margin-top:11px;overflow-wrap:anywhere}
-.vip h3,.operation h3{margin:0 0 8px}
-.vip h3 i{color:var(--primary-dark)}
-.vip p,.operation p{font-size:13px;line-height:1.7}
-.vip .vip-value{font-size:20px;font-weight:850;margin:8px 0;color:#171717}
-.vip .vip-meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
-.vip button{margin-top:12px;width:100%}
-.contact-link{display:flex;align-items:center;gap:12px;text-decoration:none;background:#fff;border:1px solid var(--line);padding:13px;border-radius:12px;margin-top:9px;font-weight:750;font-size:12px}
-.contact-link i{font-size:20px;color:var(--primary-dark);width:25px;text-align:center}
-.contact-link span{display:block;font-weight:400;font-size:11px;color:var(--muted);margin-top:2px}
-.empty{padding:17px;text-align:center;color:var(--muted);background:#fafafa;border:1px dashed #dedfe4;border-radius:11px;margin-top:10px;font-size:12px}
-.team-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:13px}
-.team-tile{background:#161616;color:#eee;padding:17px;border-radius:13px;font-size:11px;letter-spacing:.3px}
-.team-tile i{color:var(--primary);margin-right:5px}
-.team-tile strong{display:block;font-size:22px;margin-top:8px;color:var(--primary);overflow-wrap:anywhere}
-.member{padding:13px;border:1px solid var(--line);border-radius:11px;margin-top:9px;overflow-wrap:anywhere}
-.admin-title{background:#151515;color:#fff;padding:19px;border-radius:14px;border-bottom:3px solid var(--primary);margin-bottom:17px}
-.admin-title h2{margin-bottom:7px}
-.admin-title h2 i{color:var(--primary)}
-.admin-title p{color:#d0d0d0;font-size:12px}
-.tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:14px 0 20px}
-.tabs button{font-size:11px;min-height:47px}
-.tabs button.active{background:var(--primary);color:#151515}
-.panel-actions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
-.panel-actions button{flex:1}
-hr{border:0;border-top:1px solid var(--line);margin:20px 0}
-.status-pill{display:inline-block;border-radius:20px;padding:5px 9px;background:#f0f0f0;font-size:11px;font-weight:750}
-.status-pill.pending{background:#fff3d7;color:#865a0b}
-.status-pill.approved{background:#e5f6eb;color:#176a39}
-.status-pill.rejected{background:#ffebeb;color:#a3232a}
-nav{position:fixed;bottom:0;left:0;right:0;z-index:20;background:#fff;border-top:1px solid #e6e6e6;display:flex;justify-content:center;padding:7px max(5px,env(safe-area-inset-right)) calc(7px + env(safe-area-inset-bottom));box-shadow:0 -6px 20px #00000009}
-nav button{background:transparent;color:#777;flex:1;max-width:120px;min-width:0;min-height:52px;padding:5px 2px;font-size:9px;letter-spacing:.2px}
-nav button span{display:block;font-size:17px;margin-bottom:3px}
-nav button.active{color:var(--primary-dark)}
-nav button.active span{color:var(--primary-dark)}
-.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
-.settings-grid .full{grid-column:1/-1}
-@media(min-width:600px){main{padding-top:25px}.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.tabs{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media(max-width:390px){main{padding-left:10px;padding-right:10px}.card{padding:16px}.team-summary,.settings-grid{grid-template-columns:1fr}.settings-grid .full{grid-column:auto}header h1{font-size:18px}}
+.message{padding:12px;border-radius:8px;margin-top:12px;overflow-wrap:anywhere}
+.error{background:#ffebee;color:#b71c1c}
+.success{background:#e5f6eb;color:#146c35}
+.small{font-size:12px;color:#666;line-height:1.5}
+.balance{background:#111;color:white;padding:22px;border-radius:14px;margin-bottom:15px;border-bottom:4px solid var(--yellow)}
+.amount{font-size:29px;font-weight:bold;margin:12px 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid button{margin:0;min-height:50px}
+.vip,.operation{background:white;border:1px solid var(--border);border-radius:12px;padding:15px;margin-top:12px;overflow-wrap:anywhere}
+.vip h3,.operation h3{margin-top:0}
+.vip p,.operation p{line-height:1.6;font-size:14px}
+nav{position:fixed;bottom:0;left:0;right:0;background:white;border-top:3px solid var(--pink);display:flex;justify-content:space-around;flex-wrap:wrap;padding:5px 0;z-index:10}
+nav button{background:white;color:#111;font-size:10px;font-weight:normal;padding:5px 2px;margin:0;width:auto;flex:1;min-width:48px}
+nav span{display:block;font-size:18px;margin-bottom:3px}
+a{color:#c2185b;overflow-wrap:anywhere}
+.stat{background:#fff8cc;padding:13px;border-radius:9px;margin-top:10px;overflow-wrap:anywhere}
+.member{padding:12px;border:1px solid #ddd;border-radius:9px;margin-top:9px;overflow-wrap:anywhere}
+.admin-title{background:#111;color:white;padding:14px;border-radius:10px;border-bottom:4px solid var(--yellow)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.tabs button{font-size:12px}
+hr{border:0;border-top:1px solid #eee;margin:18px 0}
+#launchCounter{background:#111;color:#fff;border-left:4px solid var(--yellow);font-size:18px;font-weight:bold;text-align:center}
+.contact-link{display:block;text-decoration:none;background:#fff4f8;border:2px solid var(--pink);color:#111;padding:14px;border-radius:10px;margin-top:10px;font-weight:bold;overflow-wrap:anywhere}
+.contact-link span{display:block;font-size:12px;font-weight:normal;margin-top:5px;color:#555}
+.vip-edit{border:1px solid #ddd;padding:12px;border-radius:10px;margin-top:12px}
+.vip-edit h4{margin:0 0 8px}
+.yellow-button{background:var(--yellow);color:#111}
 </style>
 </head>
 <body>
-<header><div class="header-inner"><div class="brand-mark"><i class="fa-solid fa-crown"></i></div><div><h1 id="headerName">DISNEYLAND RDC</h1><p>RÉPUBLIQUE DÉMOCRATIQUE DU CONGO · FC</p></div></div></header>
+<header>
+<h1 id="headerName">DISNEYLAND</h1>
+<p>RÉPUBLIQUE DÉMOCRATIQUE DU CONGO · FC</p>
+</header>
 
 <main>
 <section id="authPage" class="card">
-<h2><i class="fa-solid fa-right-to-bracket"></i>Connexion</h2><p class="small">Accédez à votre espace personnel en toute simplicité.</p>
+<h2>Connexion</h2>
 <form id="loginForm">
-<label for="loginEmail">Adresse e-mail</label><input id="loginEmail" type="email" autocomplete="email" required>
-<label for="loginPassword">Code personnel à 6 chiffres</label><input id="loginPassword" type="password" inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" autocomplete="current-password" required>
-<button id="loginBtn" class="primary"><i class="fa-solid fa-lock"></i>SE CONNECTER</button></form>
-<button class="secondary" style="width:100%;margin-top:10px" onclick="showPage('registerPage')"><i class="fa-solid fa-user-plus"></i>CRÉER UN COMPTE</button>
-<button class="secondary" style="width:100%;margin-top:9px" id="forgotBtn"><i class="fa-solid fa-key"></i>RÉINITIALISER MON CODE</button><div id="loginMessage" class="message hidden"></div>
+<label>Adresse e-mail</label>
+<input id="loginEmail" type="email" autocomplete="email" required>
+<label>Code personnel à 6 chiffres</label>
+<input id="loginPassword" type="password" inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" required>
+<button id="loginBtn">SE CONNECTER</button>
+</form>
+<button class="secondary" onclick="showPage('registerPage')">CRÉER UN COMPTE</button>
+<button class="secondary" id="forgotBtn">RÉINITIALISER MON CODE</button>
+<div id="loginMessage" class="message hidden"></div>
 </section>
 
-<section id="registerPage" class="card hidden"><h2><i class="fa-solid fa-user-plus"></i>Créer un compte</h2>
+<section id="registerPage" class="card hidden">
+<h2>Créer un compte</h2>
 <form id="registerForm">
-<label for="regName">Nom complet</label><input id="regName" maxlength="100" autocomplete="name" required>
-<label for="regEmail">Adresse e-mail</label><input id="regEmail" type="email" autocomplete="email" required>
-<label for="regPassword">Code personnel à 6 chiffres</label><input id="regPassword" type="password" inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" required>
-<label for="regConfirm">Confirmer le code</label><input id="regConfirm" type="password" inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" required>
-<label for="regReferral">Code de parrainage (facultatif)</label><input id="regReferral" maxlength="50">
-<button id="registerBtn" class="primary"><i class="fa-solid fa-user-check"></i>CRÉER MON COMPTE</button></form>
-<button class="secondary" style="width:100%;margin-top:10px" onclick="showPage('authPage')">RETOUR À LA CONNEXION</button><div id="registerMessage" class="message hidden"></div>
+<label>Nom complet</label>
+<input id="regName" required maxlength="100">
+<label>Adresse e-mail</label>
+<input id="regEmail" type="email" required>
+<label>Code personnel à 6 chiffres</label>
+<input id="regPassword" type="password" inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" required>
+<label>Confirmer le code</label>
+<input id="regConfirm" type="password" inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" required>
+<label>Code de parrainage</label>
+<input id="regReferral" maxlength="50">
+<button id="registerBtn">CRÉER MON COMPTE</button>
+</form>
+<button class="secondary" onclick="showPage('authPage')">RETOUR</button>
+<div id="registerMessage" class="message hidden"></div>
 </section>
 
 <section id="homePage" class="hidden">
-<div class="card"><h2 id="welcomeTitle">Bienvenue sur DISNEYLAND RDC</h2><p class="small">Votre espace personnel et le suivi de vos opérations.</p><div id="launchCounter" class="stat">DISNEYLAND RDC</div></div>
-<div class="balance"><div class="balance-label"><i class="fa-solid fa-wallet"></i> SOLDE DISPONIBLE</div><div id="balance" class="amount">0 FC</div><button onclick="refreshBalance()"><i class="fa-solid fa-rotate"></i>ACTUALISER MON SOLDE</button>
-<div class="balance-details"><div class="balance-detail">MEMBRE<b id="memberName">—</b></div><div class="balance-detail">STATUT VIP<b id="myVIP">Aucun</b></div><div class="balance-detail">REVENUS VIP CRÉDITÉS<b id="vipIncomeTotal">0 FC</b></div><div class="balance-detail">DEVISE<b>Franc congolais</b></div></div></div>
-<div class="card"><h3>Services de la plateforme</h3><div class="grid">
-<button onclick="showPage('depositPage')"><i class="fa-solid fa-money-bill-transfer"></i><span>EFFECTUER UN DÉPÔT</span></button>
-<button onclick="showPage('withdrawPage')"><i class="fa-solid fa-money-bill-wave"></i><span>DEMANDER UN RETRAIT</span></button>
-<button onclick="showPage('vipPage')"><i class="fa-solid fa-gem"></i><span>PRODUITS VIP</span></button>
-<button onclick="showPage('historyPage');loadHistory()"><i class="fa-solid fa-clock-rotate-left"></i><span>HISTORIQUE</span></button>
-<button onclick="showPage('teamPage')"><i class="fa-solid fa-people-group"></i><span>MON ÉQUIPE</span></button>
-<button onclick="showPage('accountPage')"><i class="fa-solid fa-user-gear"></i><span>MON ESPACE</span></button>
-<button id="adminHomeBtn" class="hidden" onclick="showPage('adminPage');loadAdmin()"><i class="fa-solid fa-shield-halved"></i><span>ADMINISTRATION</span></button></div></div>
-<div class="card"><h3><i class="fa-solid fa-headset"></i> Assistance et contacts</h3><div id="publicContacts"></div></div>
+<div class="card">
+<h2 id="welcomeTitle">Bienvenue sur DISNEYLAND RDC 🇨🇩</h2>
+<div id="launchCounter" class="stat">Lancement : calcul...</div>
+</div>
+<div class="balance">
+<div>SOLDE DISPONIBLE</div>
+<div id="balance" class="amount">0 FC</div>
+<button class="yellow-button" onclick="refreshBalance()">ACTUALISER MON SOLDE</button>
+<p>Membre : <b id="memberName">—</b></p>
+<p>VIP : <b id="myVIP">Aucun</b></p>
+<p>Revenus VIP crédités : <b id="vipIncomeTotal">0 FC</b></p>
+</div>
+<div class="card">
+<h3>Mes opérations</h3>
+<div class="grid">
+<button onclick="showPage('depositPage')">💳 DÉPÔT</button>
+<button onclick="showPage('withdrawPage')">💸 RETRAIT</button>
+<button onclick="showPage('vipPage')">📦 PRODUITS VIP</button>
+<button onclick="showPage('historyPage');loadHistory()">📋 HISTORIQUE</button>
+<button onclick="showPage('teamPage');loadTeam()">👥 MON ÉQUIPE</button>
+<button onclick="showPage('accountPage')">👤 MON ESPACE</button>
+<button id="adminHomeBtn" class="hidden" onclick="showPage('adminPage');loadAdmin()">🛡️ ADMINISTRATION</button>
+</div>
+</div>
+<div class="card">
+<h3>📞 Contacts officiels</h3>
+<p class="small">WhatsApp, Telegram et service client.</p>
+<div id="publicContacts"></div>
+</div>
 </section>
 
-<section id="depositPage" class="card hidden"><h2><i class="fa-solid fa-money-bill-transfer"></i>Effectuer un dépôt</h2><p class="small">Minimum de dépôt : <b id="depositMinText">20 000 FC</b></p><div id="paymentNumbers"></div>
-<form id="depositForm"><label for="depositAmount">Montant à déposer (FC)</label><input id="depositAmount" type="number" min="20000" step="1" required>
-<label for="depositOperator">Opérateur de paiement</label><select id="depositOperator"><option>AIRTEL MONEY</option><option>ORANGE MONEY</option><option>M-PESA</option></select>
-<label for="depositReference">Référence du transfert</label><input id="depositReference" maxlength="100" required>
-<button id="depositBtn" class="primary"><i class="fa-solid fa-paper-plane"></i>ENVOYER MA DEMANDE</button></form><div id="depositMessage" class="message hidden"></div>
+<section id="depositPage" class="card hidden">
+<h2>Effectuer un dépôt</h2>
+<p class="small">Minimum : 20 000 FC.</p>
+<div id="paymentNumbers"></div>
+<form id="depositForm">
+<label>Montant en FC</label>
+<input id="depositAmount" type="number" min="20000" step="1" required>
+<label>Opérateur</label>
+<select id="depositOperator"><option>AIRTEL MONEY</option><option>ORANGE MONEY</option><option>M-PESA</option></select>
+<label>Référence du transfert</label>
+<input id="depositReference" maxlength="100" required>
+<button id="depositBtn">ENVOYER MA DEMANDE</button>
+</form>
+<div id="depositMessage" class="message hidden"></div>
 </section>
 
-<section id="withdrawPage" class="card hidden"><h2><i class="fa-solid fa-money-bill-wave"></i>Demander un retrait</h2><p class="small">Minimum : <b id="withdrawMinText">3 000 FC</b> · Frais : <b id="withdrawFeeText">15 %</b></p>
-<form id="withdrawForm"><label for="withdrawAmount">Montant du retrait (FC)</label><input id="withdrawAmount" type="number" min="3000" step="1" required>
-<label for="withdrawOperator">Opérateur</label><select id="withdrawOperator"><option>AIRTEL MONEY</option><option>ORANGE MONEY</option><option>M-PESA</option></select>
-<label for="withdrawPhone">Numéro de réception</label><input id="withdrawPhone" type="tel" maxlength="20" placeholder="+243XXXXXXXXX" required>
-<div class="stat">Montant net estimé : <b id="netAmount">0 FC</b></div><button id="withdrawBtn" class="primary"><i class="fa-solid fa-paper-plane"></i>ENVOYER LA DEMANDE</button></form><div id="withdrawMessage" class="message hidden"></div>
+<section id="withdrawPage" class="card hidden">
+<h2>Demander un retrait</h2>
+<p>Minimum : 3 000 FC.</p>
+<p class="small">Frais : <b id="withdrawFeeText">8 %</b>.</p>
+<form id="withdrawForm">
+<label>Montant en FC</label>
+<input id="withdrawAmount" type="number" min="3000" step="1" required>
+<label>Opérateur</label>
+<select id="withdrawOperator"><option>AIRTEL MONEY</option><option>ORANGE MONEY</option><option>M-PESA</option></select>
+<label>Numéro de réception</label>
+<input id="withdrawPhone" type="tel" maxlength="20" required placeholder="+243XXXXXXXXX">
+<p>Montant net : <b id="netAmount">0 FC</b></p>
+<button id="withdrawBtn">ENVOYER LA DEMANDE</button>
+</form>
+<div id="withdrawMessage" class="message hidden"></div>
 </section>
 
-<section id="vipPage" class="card hidden"><h2><i class="fa-solid fa-gem"></i>Produits VIP</h2><p class="small">Consultez les différentes offres disponibles.</p><div id="vipList"></div><div id="vipMessage" class="message hidden"></div></section>
-<section id="historyPage" class="card hidden"><h2><i class="fa-solid fa-clock-rotate-left"></i>Historique des opérations</h2><button class="secondary" onclick="loadHistory()"><i class="fa-solid fa-rotate"></i>ACTUALISER</button><div id="historyList"></div></section>
-
-<section id="teamPage" class="card hidden"><h2><i class="fa-solid fa-people-group"></i>Mon équipe</h2><p class="small">Taux configurés : niveau 1, <b id="level1Percent">20</b>% · niveau 2, <b id="level2Percent">3</b>% · niveau 3, <b id="level3Percent">1</b>%.</p>
-<div class="stat">Mon code de parrainage : <b id="referralCode">Chargement...</b></div><button class="secondary" style="width:100%" onclick="copyReferral()"><i class="fa-solid fa-copy"></i>COPIER MON CODE</button>
-<label for="referralLink">Lien d'inscription personnel</label><input id="referralLink" readonly><button class="secondary" style="width:100%;margin-top:9px" onclick="copyReferralLink()"><i class="fa-solid fa-link"></i>COPIER LE LIEN</button>
-<div class="team-summary"><div class="team-tile"><i class="fa-solid fa-users"></i> NOMBRE D'INSCRITS<strong id="teamCount">0</strong></div><div class="team-tile"><i class="fa-solid fa-chart-line"></i> COMMISSIONS DE L'ÉQUIPE<strong id="teamCommission">0 FC</strong></div></div>
-<div class="stat">Niveau 1 · <b id="countLevel1">0</b> membre(s)</div><div id="listLevel1"></div><div class="stat">Niveau 2 · <b id="countLevel2">0</b> membre(s)</div><div id="listLevel2"></div><div class="stat">Niveau 3 · <b id="countLevel3">0</b> membre(s)</div><div id="listLevel3"></div><div id="teamMessage" class="message hidden"></div>
+<section id="vipPage" class="card hidden">
+<h2>📦 PRODUITS VIP</h2>
+<div id="vipList"></div>
+<p class="small">Montants indicatifs, non garantis. Aucun versement automatique n’est effectué.</p>
 </section>
 
-<section id="accountPage" class="card hidden"><h2><i class="fa-solid fa-user-gear"></i>Mon espace personnel</h2><div class="operation"><p>Nom complet</p><b id="accountName">—</b><hr><p>Adresse e-mail</p><b id="accountEmail">—</b><hr><p>Code de parrainage</p><b id="accountReferral">—</b></div><button id="logoutBtn" class="danger" style="width:100%;margin-top:12px"><i class="fa-solid fa-right-from-bracket"></i>SE DÉCONNECTER</button><div id="accountMessage" class="message hidden"></div></section>
+<section id="historyPage" class="card hidden">
+<h2>Historique</h2><button onclick="loadHistory()">ACTUALISER</button><div id="historyList"></div>
+</section>
 
-<section id="adminPage" class="card hidden"><div class="admin-title"><h2><i class="fa-solid fa-shield-halved"></i>Espace administrateur</h2><p>Gestion des opérations, des membres et des paramètres de la plateforme.</p><p id="adminIdentity"></p></div>
+<section id="teamPage" class="card hidden">
+<h2>👥 MON ÉQUIPE</h2>
+<div class="stat">Mon code : <b id="referralCode">—</b></div>
+<button onclick="copyReferral()">COPIER MON CODE</button>
+<label>Lien d'inscription personnel</label>
+<input id="referralLink" readonly>
+<button onclick="copyReferralLink()">COPIER LE LIEN</button>
+<div class="stat">Niveau 1 — <b id="level1Percent">20</b>% : <b id="countLevel1">0</b> membre(s)</div><div id="listLevel1"></div>
+<div class="stat">Niveau 2 — <b id="level2Percent">3</b>% : <b id="countLevel2">0</b> membre(s)</div><div id="listLevel2"></div>
+<div class="stat">Niveau 3 — <b id="level3Percent">1</b>% : <b id="countLevel3">0</b> membre(s)</div><div id="listLevel3"></div>
+<div id="teamStats" class="stat hidden"></div><div id="teamMessage" class="message hidden"></div>
+</section>
+
+<section id="accountPage" class="card hidden">
+<h2>Mon espace personnel</h2>
+<p>Nom : <b id="accountName">—</b></p><p>E-mail : <b id="accountEmail">—</b></p><p>Code de parrainage : <b id="accountReferral">—</b></p>
+<button id="logoutBtn">SE DÉCONNECTER</button><div id="accountMessage" class="message hidden"></div>
+</section>
+
+<section id="adminPage" class="card hidden">
+<div class="admin-title"><h2>🛡️ ESPACE ADMINISTRATEUR</h2><p>Administration de la plateforme</p><p id="adminIdentity"></p></div>
+<p class="small">Accès réservé à angenabukuze@gmail.com.</p>
 <div class="tabs">
-<button data-panel="adminDepositsPanel" onclick="adminTab('adminDepositsPanel');loadAdminDeposits()"><i class="fa-solid fa-arrow-down-to-line"></i>DÉPÔTS</button>
-<button data-panel="adminWithdrawalsPanel" onclick="adminTab('adminWithdrawalsPanel');loadAdminWithdrawals()"><i class="fa-solid fa-arrow-up-from-line"></i>RETRAITS</button>
-<button data-panel="adminMembersPanel" onclick="adminTab('adminMembersPanel');loadMembers()"><i class="fa-solid fa-users"></i>MEMBRES</button>
-<button data-panel="adminSettingsPanel" onclick="adminTab('adminSettingsPanel');loadAdminSettings()"><i class="fa-solid fa-sliders"></i>PARAMÈTRES</button></div>
-<div id="adminDepositsPanel"><h3>Demandes de dépôt</h3><button class="secondary" onclick="loadAdminDeposits()"><i class="fa-solid fa-rotate"></i>ACTUALISER</button><div id="adminDeposits"></div></div>
-<div id="adminWithdrawalsPanel" class="hidden"><h3>Demandes de retrait</h3><button class="secondary" onclick="loadAdminWithdrawals()"><i class="fa-solid fa-rotate"></i>ACTUALISER</button><div id="adminWithdrawals"></div></div>
-<div id="adminMembersPanel" class="hidden"><h3>Membres inscrits</h3><button class="secondary" onclick="loadMembers()"><i class="fa-solid fa-rotate"></i>ACTUALISER</button><div id="adminMemberStats" class="stat"></div><div id="adminMembers"></div></div>
-<div id="adminSettingsPanel" class="hidden"><h3>Paramètres de la plateforme</h3>
-<form id="settingsForm"><div class="settings-grid">
-<div class="full"><label for="setPlatformName">Nom de la plateforme</label><input id="setPlatformName" maxlength="100" required></div>
-<div><label for="setAirtelNumber">Numéro Airtel Money</label><input id="setAirtelNumber" required></div><div><label for="setAirtelName">Bénéficiaire Airtel</label><input id="setAirtelName" required></div>
-<div><label for="setOrangeNumber">Numéro Orange Money</label><input id="setOrangeNumber" required></div><div><label for="setOrangeName">Bénéficiaire Orange</label><input id="setOrangeName" required></div>
-<div><label for="setMpesaNumber">Numéro M-Pesa</label><input id="setMpesaNumber" required></div><div><label for="setMpesaName">Bénéficiaire M-Pesa</label><input id="setMpesaName" required></div>
-<div><label for="setWithdrawalFee">Frais de retrait (%)</label><input id="setWithdrawalFee" type="number" min="0" max="100" required></div>
-<div><label for="setDepositMin">Dépôt minimum (FC)</label><input id="setDepositMin" type="number" min="0" required></div><div><label for="setWithdrawalMin">Retrait minimum (FC)</label><input id="setWithdrawalMin" type="number" min="0" required></div>
-<div><label for="setRef1">Commission niveau 1 (%)</label><input id="setRef1" type="number" min="0" max="100" required></div><div><label for="setRef2">Commission niveau 2 (%)</label><input id="setRef2" type="number" min="0" max="100" required></div><div><label for="setRef3">Commission niveau 3 (%)</label><input id="setRef3" type="number" min="0" max="100" required></div>
-<div><label for="setThemeColor">Couleur principale</label><input id="setThemeColor" type="text" placeholder="#d4a83e" required></div>
-<div class="full"><label for="setWhatsApp">Lien du groupe WhatsApp</label><input id="setWhatsApp" type="url"></div><div class="full"><label for="setTelegram">Lien du groupe Telegram</label><input id="setTelegram" type="url"></div><div class="full"><label for="setSupport">Lien du service client</label><input id="setSupport" type="url"></div>
-<div class="full"><label for="setVipNote">Texte affiché sur les offres VIP</label><textarea id="setVipNote" maxlength="500" placeholder="Description ou conditions des offres VIP"></textarea></div>
-<div class="full"><label for="setVipOffers">Offres VIP (une ligne par offre : nom | capital | revenu journalier | durée en jours)</label><textarea id="setVipOffers" placeholder="VIP 1 | 20000 | 2500 | 90"></textarea><p class="small">Exemple : VIP 1 | 20000 | 2500 | 90</p></div>
-</div><button id="saveSettingsBtn" class="primary"><i class="fa-solid fa-floppy-disk"></i>ENREGISTRER LES PARAMÈTRES</button></form><div id="settingsMessage" class="message hidden"></div></div>
-<div id="adminMessage" class="message hidden"></div></section>
+<button onclick="adminTab('adminDepositsPanel')">💳 DÉPÔTS</button>
+<button onclick="adminTab('adminWithdrawalsPanel')">💸 RETRAITS</button>
+<button onclick="adminTab('adminMembersPanel')">👥 MEMBRES</button>
+<button onclick="adminTab('adminSettingsPanel')">⚙️ PARAMÈTRES</button>
+</div>
+<div id="adminDepositsPanel"><h3>Demandes de dépôt</h3><div id="adminDeposits">Chargement...</div></div>
+<div id="adminWithdrawalsPanel" class="hidden"><h3>Demandes de retrait</h3><div id="adminWithdrawals">Chargement...</div></div>
+
+<div id="adminMembersPanel" class="hidden">
+<h3>Membres inscrits</h3><button onclick="loadMembers()">ACTUALISER</button><div id="adminMemberStats" class="stat"></div><div id="adminMembers"></div>
+<hr><h3>Attribuer un VIP</h3>
+<form id="assignVipForm">
+<label>ID du membre</label><input id="vipUserId" required>
+<label>VIP</label><select id="vipName"><option>VIP 1</option><option>VIP 2</option><option>VIP 3</option><option>VIP 4</option><option>VIP 5</option><option>VIP 6</option><option>VIP 7</option><option>Aucun</option></select>
+<button>ENREGISTRER LE VIP</button>
+</form>
+<hr><h3>Réinitialiser le code d'un membre</h3>
+<form id="adminResetForm"><label>E-mail du membre</label><input id="resetMemberEmail" type="email" required><button>ENVOYER LE LIEN DE RÉINITIALISATION</button></form>
+</div>
+
+<div id="adminSettingsPanel" class="hidden">
+<h3>Paramètres de la plateforme</h3>
+<form id="settingsForm">
+<label>Nom de la plateforme</label><input id="settingName" required>
+<label>Lien du groupe WhatsApp officiel</label><input id="settingWhatsApp" type="url" placeholder="https://chat.whatsapp.com/...">
+<label>Lien du groupe Telegram officiel</label><input id="settingTelegram" type="url" placeholder="https://t.me/...">
+<label>Lien du service client</label><input id="settingSupport" type="url" placeholder="https://...">
+<label>État du site</label><select id="settingOpen"><option value="true">Site ouvert</option><option value="false">Site fermé</option></select>
+<label>Couleur principale</label><input id="settingThemeColor" type="color" value="#e91e63">
+<label>Couleur de fond</label><input id="settingBackgroundColor" type="color" value="#f5f5f5">
+<label>Numéro Airtel Money</label><input id="settingAirtelNumber" maxlength="30">
+<label>Bénéficiaire Airtel</label><input id="settingAirtelName" maxlength="100">
+<label>Numéro Orange Money</label><input id="settingOrangeNumber" maxlength="30">
+<label>Bénéficiaire Orange</label><input id="settingOrangeName" maxlength="100">
+<label>Numéro M-Pesa</label><input id="settingMpesaNumber" maxlength="30">
+<label>Bénéficiaire M-Pesa</label><input id="settingMpesaName" maxlength="100">
+
+<hr><h3>📦 Modifier les offres VIP</h3>
+<div id="adminVipEditor"></div>
+
+<hr><h3>👥 Frais de parrainage</h3>
+<label>Commission niveau 1 (%)</label><input id="settingReferral1" type="number" min="0" max="100" step="0.01" value="20" required>
+<label>Commission niveau 2 (%)</label><input id="settingReferral2" type="number" min="0" max="100" step="0.01" value="3" required>
+<label>Commission niveau 3 (%)</label><input id="settingReferral3" type="number" min="0" max="100" step="0.01" value="1" required>
+
+<hr><h3>💸 Frais de retrait</h3>
+<label>Frais de retrait (%)</label><input id="settingWithdrawalFee" type="number" min="0" max="100" step="0.01" value="15" required>
+
+<hr><h3>💰 Limites de transaction</h3>
+<label>Dépôt minimum (FC)</label><input id="settingDepositMinimum" type="number" min="0" step="1" value="20000" required>
+<label>Retrait minimum (FC)</label><input id="settingWithdrawalMinimum" type="number" min="0" step="1" value="3000" required>
+
+<hr><h3>📅 Validité des offres VIP</h3>
+<label>Durée par défaut (jours)</label><input id="settingVipDays" type="number" min="1" max="3650" step="1" value="90" required>
+<button id="saveSettingsBtn">ENREGISTRER TOUS LES PARAMÈTRES</button>
+</form>
+</div>
+<div id="adminMessage" class="message hidden"></div>
+</section>
 </main>
 
 <nav id="bottomNav" class="hidden">
-<button data-page="homePage" onclick="showPage('homePage')"><span><i class="fa-solid fa-house"></i></span>ACCUEIL</button>
-<button data-page="vipPage" onclick="showPage('vipPage')"><span><i class="fa-solid fa-gem"></i></span>VIP</button>
-<button data-page="teamPage" onclick="showPage('teamPage')"><span><i class="fa-solid fa-people-group"></i></span>ÉQUIPE</button>
-<button data-page="historyPage" onclick="showPage('historyPage');loadHistory()"><span><i class="fa-solid fa-clock-rotate-left"></i></span>HISTORIQUE</button>
-<button data-page="accountPage" onclick="showPage('accountPage')"><span><i class="fa-solid fa-user"></i></span>COMPTE</button>
-<button id="adminNavBtn" data-page="adminPage" class="hidden" onclick="showPage('adminPage');loadAdmin()"><span><i class="fa-solid fa-shield-halved"></i></span>ADMIN</button>
+<button onclick="showPage('homePage')"><span>🏠</span>ACCUEIL</button>
+<button onclick="showPage('vipPage')"><span>📦</span>VIP</button>
+<button onclick="showPage('teamPage');loadTeam()"><span>👥</span>ÉQUIPE</button>
+<button onclick="showPage('historyPage');loadHistory()"><span>📋</span>HISTO.</button>
+<button onclick="showPage('accountPage')"><span>👤</span>COMPTE</button>
+<button id="adminNavBtn" class="hidden" onclick="showPage('adminPage');loadAdmin()"><span>🛡️</span>ADMIN</button>
 </nav>
 
 <script type="module">
 import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-const supabase=createClient('https://pmgvvrfwurjlqbpnboxw.supabase.co','sb_publishable_aHjw0ajhca0EVC8lKvYqwA_A7nqUvG9');
+const supabase=createClient(
+'https://pmgvvrfwurjlqbpnboxw.supabase.co',
+'sb_publishable_aHjw0ajhca0EVC8lKvYqwA_A7nqUvG9'
+);
+
 const ADMIN_EMAIL='angenabukuze@gmail.com';
-const DEFAULT_WHATSAPP='https://chat.whatsapp.com/Cxa8Mb8pZhY7v2pKoAWUjs?s=cl&p=a&mlu=4&ilr=4&iam=0';
-const DEFAULT_TELEGRAM='https://t.me/+dbpiuZGoZUE4MDhk';
-const DEFAULT_SUPPORT='https://t.me/Drcprom';
-const DEFAULT_AIRTEL='0979928885';
+const DEFAULT_WHATSAPP='https://chat.whatsapp.com/LHZZbS436of0PoWBOtnaZp?s=cl&p=a&mlu=4&ilr=4&iam=0';
+const DEFAULT_TELEGRAM='https://t.me/+mP-Nw_-1xNo0MWQ0';
+const DEFAULT_SUPPORT='https://t.me/Disneylandcd';
+const DEFAULT_AIRTEL='0973087965';
 const DEFAULT_ORANGE='089 953 2643';
 const DEFAULT_MPESA='086 182 3718';
+
+let currentUser=null,profile=null,settings={};
 const $=id=>document.getElementById(id);
-const money=n=>new Intl.NumberFormat('fr-FR',{maximumFractionDigits:0}).format(Number(n)||0)+' FC';
+const money=n=>new Intl.NumberFormat('fr-FR').format(Number(n)||0)+' FC';
 const isAdmin=()=>String(currentUser?.email||'').toLowerCase()===ADMIN_EMAIL;
-let currentUser=null,profile=null,settings={},vipOffers=[];
+
 const defaultVipOffers=[
 {name:'VIP 1',capital:20000,daily:2500,days:90},
 {name:'VIP 2',capital:40000,daily:6000,days:90},
@@ -226,36 +291,45 @@ const defaultVipOffers=[
 {name:'VIP 7',capital:1000000,daily:400000,days:90}
 ];
 
-function message(id,text,type='error'){const el=$(id);if(!el)return;el.textContent=String(text??'');el.className='message '+type;}
-function clearMessage(id){const el=$(id);if(el){el.textContent='';el.className='message hidden';}}
+let vipOffers=defaultVipOffers.map(v=>({...v}));
+let localFinancialSettings={};
+
+function message(id,text,type='error'){
+const el=$(id);if(!el)return;
+el.textContent=String(text??'');el.className='message '+type;
+}
+function clearMessage(id){
+const el=$(id);if(el){el.textContent='';el.className='message hidden';}
+}
 function friendlyError(err){
-const m=String(err?.message||err||'Une erreur est survenue.');
-if(/invalid login credentials/i.test(m))return'E-mail ou code personnel incorrect.';
-if(/email not confirmed/i.test(m))return'Confirmez votre adresse e-mail avant de vous connecter.';
-if(/user already registered/i.test(m))return'Cette adresse e-mail possède déjà un compte.';
-if(/row-level security|permission denied|not allowed/i.test(m))return'Cette opération n’est pas autorisée. Vérifiez les droits d’accès de Supabase.';
-if(/does not exist|schema cache|could not find the function/i.test(m))return'Une fonction ou une colonne nécessaire est absente de Supabase.';
+const m=String(err?.message||err||'Erreur inconnue');
+if(/invalid login credentials/i.test(m))return 'E-mail ou code incorrect.';
+if(/email not confirmed/i.test(m))return 'Confirme ton adresse e-mail.';
+if(/user already registered/i.test(m))return 'Compte déjà enregistré. Connecte-toi.';
+if(/row-level security|permission denied/i.test(m))return 'Accès refusé par les règles de sécurité Supabase.';
+if(/does not exist|schema cache|could not find the function/i.test(m))return 'Fonction ou colonne absente dans Supabase.';
 return m;
 }
 function normalizeCode(v){return String(v||'').trim().replace(/\s+/g,'').toUpperCase();}
-function escapeHTML(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function validHttpUrl(value){try{const u=new URL(String(value||''));return u.protocol==='https:'||u.protocol==='http';}catch{return false;}}
-function showEmpty(id,text){const el=$(id);if(el)el.innerHTML='<div class="empty">'+escapeHTML(text)+'</div>';}
-function setLoading(id,text){const el=$(id);if(el)el.innerHTML='<div class="empty">'+escapeHTML(text)+'</div>';}
-function getReferralFromURL(){const p=new URLSearchParams(location.search);return normalizeCode(p.get('ref')||p.get('referral')||p.get('parrain')||'');}
-function applyReferralFromURL(){if($('regReferral')&&getReferralFromURL()&&!$('regReferral').value)$('regReferral').value=getReferralFromURL();}
+function getReferralFromURL(){
+const p=new URLSearchParams(location.search);
+return normalizeCode(p.get('ref')||p.get('referral')||'');
+}
+function applyReferralFromURL(){
+if($('regReferral')&&getReferralFromURL()&&!$('regReferral').value)$('regReferral').value=getReferralFromURL();
+}
+applyReferralFromURL();
 
 window.showPage=id=>{
+if(id==='adminPage'&&!isAdmin())id='homePage';
 const protectedPages=['homePage','depositPage','withdrawPage','vipPage','historyPage','teamPage','accountPage','adminPage'];
 if(protectedPages.includes(id)&&!currentUser)id='authPage';
-if(id==='adminPage'&&!isAdmin())id='homePage';
 document.querySelectorAll('main>section').forEach(s=>s.classList.add('hidden'));
-$(id)?.classList.remove('hidden');
+if($(id))$(id).classList.remove('hidden');
 $('bottomNav').classList.toggle('hidden',!currentUser);
 $('adminHomeBtn').classList.toggle('hidden',!isAdmin());
 $('adminNavBtn').classList.toggle('hidden',!isAdmin());
-document.querySelectorAll('nav [data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
-window.scrollTo({top:0,behavior:'smooth'});
+window.scrollTo(0,0);
 if(id==='vipPage')loadVIP();
 if(id==='accountPage')displayProfile();
 if(id==='depositPage')renderPaymentNumbers();
@@ -263,76 +337,215 @@ if(id==='teamPage')loadTeam();
 if(id==='registerPage')applyReferralFromURL();
 if(id==='homePage')renderPublicContacts();
 };
-
-window.copyText=async text=>{try{await navigator.clipboard.writeText(text);alert('Copié avec succès.');}catch{prompt('Copiez ce texte :',text);}};
-window.copyReferral=()=>profile?.referral_code?copyText(profile.referral_code):alert('Code de parrainage indisponible.');
-window.copyReferralLink=()=> $('referralLink').value?copyText($('referralLink').value):alert('Lien indisponible.');
+window.adminTab=id=>{
+if(!isAdmin())return;
+['adminDepositsPanel','adminWithdrawalsPanel','adminMembersPanel','adminSettingsPanel'].forEach(x=>$(x).classList.toggle('hidden',x!==id));
+};
+window.copyText=async text=>{
+try{await navigator.clipboard.writeText(text);alert('Copié.');}
+catch{prompt('Copie ce texte :',text);}
+};
+window.copyReferral=()=>profile?.referral_code?copyText(profile.referral_code):alert('Code indisponible.');
+window.copyReferralLink=()=>$('referralLink').value?copyText($('referralLink').value):alert('Lien indisponible.');
 
 function updateLaunch(){
-const launch=new Date('2026-10-22T08:00:00+02:00').getTime(),elapsed=Math.max(0,Date.now()-launch);
-const d=Math.floor(elapsed/86400000),h=Math.floor(elapsed%86400000/3600000),m=Math.floor(elapsed%3600000/60000),s=Math.floor(elapsed%60000/1000);
-$('launchCounter').textContent='Depuis le lancement · '+d+' j '+h+' h '+m+' min '+s+' s';
+const launch=new Date('2026-10-22T08:00:00+02:00').getTime();
+let elapsed=Math.max(0,Date.now()-launch);
+const days=Math.floor(elapsed/86400000);elapsed%=86400000;
+const hours=Math.floor(elapsed/3600000);elapsed%=3600000;
+const minutes=Math.floor(elapsed/60000);
+const seconds=Math.floor((elapsed%60000)/1000);
+$('launchCounter').textContent='Depuis le lancement : '+String(days).padStart(2,'0')+' j '+String(hours).padStart(2,'0')+' h '+String(minutes).padStart(2,'0')+' min '+String(seconds).padStart(2,'0')+' s';
 }
 updateLaunch();setInterval(updateLaunch,1000);
 
 function applyTheme(){
-const color=/^#[0-9a-f]{6}$/i.test(settings.theme_color||'')?settings.theme_color:'#d4a83e';
-document.documentElement.style.setProperty('--primary',color);
-document.documentElement.style.setProperty('--primary-dark',color);
-$('withdrawFeeText').textContent=Number(settings.withdrawal_fee??15)+' %';
-$('depositMinText').textContent=money(settings.deposit_minimum??20000);
-$('withdrawMinText').textContent=money(settings.withdrawal_minimum??3000);
-$('level1Percent').textContent=Number(settings.referral_commission_1??20);
-$('level2Percent').textContent=Number(settings.referral_commission_2??3);
-$('level3Percent').textContent=Number(settings.referral_commission_3??1);
-$('depositAmount').min=Number(settings.deposit_minimum??20000);
-$('withdrawAmount').min=Number(settings.withdrawal_minimum??3000);
+document.documentElement.style.setProperty('--pink',settings.theme_color||'#e91e63');
+document.documentElement.style.setProperty('--bg',settings.background_color||'#f5f5f5');
+$('withdrawFeeText').textContent=Number(settings.withdrawal_fee??localFinancialSettings.withdrawal_fee??15)+' %';
+$('level1Percent').textContent=Number(settings.referral_commission_1??localFinancialSettings.referral_commission_1??20);
+$('level2Percent').textContent=Number(settings.referral_commission_2??localFinancialSettings.referral_commission_2??3);
+$('level3Percent').textContent=Number(settings.referral_commission_3??localFinancialSettings.referral_commission_3??1);
+$('settingThemeColor').value=settings.theme_color||'#e91e63';
+$('settingBackgroundColor').value=settings.background_color||'#f5f5f5';
+document.querySelector('meta[name="theme-color"]').setAttribute('content',settings.theme_color||'#e91e63');
 }
 
+function validHttpUrl(value){
+try{const u=new URL(String(value||''));return u.protocol==='https:'||u.protocol==='http:';}
+catch{return false;}
+}
 function renderPublicContacts(){
-const c=$('publicContacts');if(!c)return;c.replaceChildren();
-[
-{label:'GROUPE WHATSAPP OFFICIEL',sub:'Actualités et informations',url:settings.whatsapp_url||DEFAULT_WHATSAPP,icon:'fa-brands fa-whatsapp'},
-{label:'GROUPE TELEGRAM OFFICIEL',sub:'Rejoindre la communauté',url:settings.telegram_url||DEFAULT_TELEGRAM,icon:'fa-brands fa-telegram'},
-{label:'SERVICE CLIENT',sub:'Contacter l’assistance',url:settings.support_url||DEFAULT_SUPPORT,icon:'fa-solid fa-headset'}
-].forEach(x=>{if(!validHttpUrl(x.url))return;const a=document.createElement('a');a.className='contact-link';a.href=x.url;a.target='_blank';a.rel='noopener noreferrer';const i=document.createElement('i');i.className=x.icon;const t=document.createElement('div');t.textContent=x.label;const s=document.createElement('span');s.textContent=x.sub;t.appendChild(s);a.append(i,t);c.appendChild(a);});
+const c=$('publicContacts');c.replaceChildren();
+const contacts=[
+{label:'🟢 GROUPE WHATSAPP OFFICIEL',url:settings.whatsapp_url||DEFAULT_WHATSAPP,description:'Rejoindre le groupe WhatsApp'},
+{label:'🔵 GROUPE TELEGRAM OFFICIEL',url:settings.telegram_url||DEFAULT_TELEGRAM,description:'Rejoindre le groupe Telegram'},
+{label:'📞 SERVICE CLIENT',url:settings.support_url||DEFAULT_SUPPORT,description:'Contacter le service client'}
+];
+contacts.forEach(item=>{
+if(!validHttpUrl(item.url))return;
+const a=document.createElement('a');
+a.className='contact-link';a.href=item.url;a.target='_blank';a.rel='noopener noreferrer';
+a.append(document.createTextNode(item.label));
+const span=document.createElement('span');span.textContent=item.description;a.appendChild(span);
+c.appendChild(a);
+});
 }
 
 function renderPaymentNumbers(){
-const c=$('paymentNumbers');if(!c)return;c.replaceChildren();
-[
-['AIRTEL MONEY',settings.airtel_number||DEFAULT_AIRTEL,settings.airtel_name||'YVETTE'],
-['ORANGE MONEY',settings.orange_number||DEFAULT_ORANGE,settings.orange_name||'JACQUELINE'],
-['M-PESA',settings.mpesa_number||DEFAULT_MPESA,settings.mpesa_name||'REGINA']
-].forEach(([title,num,name])=>{const box=document.createElement('div');box.className='vip';const h=document.createElement('h3');h.textContent=title;const p=document.createElement('p');p.textContent=String(num)+' · Bénéficiaire : '+String(name);const btn=document.createElement('button');btn.className='secondary';btn.innerHTML='<i class="fa-solid fa-copy"></i>COPIER LE NUMÉRO';btn.onclick=()=>copyText(String(num).replace(/\s/g,''));box.append(h,p,btn);c.appendChild(box);});
+const list=[
+{title:'AIRTEL MONEY',number:settings.airtel_number||DEFAULT_AIRTEL,name:settings.airtel_name||'BASHIMBE BASHANGWA'},
+{title:'ORANGE MONEY',number:settings.orange_number||DEFAULT_ORANGE,name:settings.orange_name||'JACQUELINE'},
+{title:'M-PESA',number:settings.mpesa_number||DEFAULT_MPESA,name:settings.mpesa_name||'REGINA'}
+];
+const c=$('paymentNumbers');c.replaceChildren();
+list.forEach(p=>{
+const box=document.createElement('div');box.className='vip';
+const title=document.createElement('b');title.textContent=p.title;
+const details=document.createElement('p');details.textContent=p.number+' · Bénéficiaire : '+p.name;
+const btn=document.createElement('button');btn.className='secondary';btn.type='button';btn.textContent='COPIER LE NUMÉRO';btn.onclick=()=>copyText(String(p.number).replace(/\s/g,''));
+box.append(title,details,btn);c.appendChild(box);
+});
+}
+
+function normalizeVipOffers(value){
+if(!Array.isArray(value)||value.length!==7)return defaultVipOffers.map(v=>({...v}));
+const result=value.map((v,i)=>({name:'VIP '+(i+1),capital:Number(v?.capital),daily:Number(v?.daily),days:Number(v?.days)}));
+if(result.some(v=>!Number.isFinite(v.capital)||v.capital<0||!Number.isFinite(v.daily)||v.daily<0||!Number.isInteger(v.days)||v.days<1||v.days>3650))return defaultVipOffers.map(v=>({...v}));
+return result;
+}
+function renderAdminVipEditor(){
+const target=$('adminVipEditor');target.replaceChildren();
+vipOffers.forEach((v,i)=>{
+const box=document.createElement('div');box.className='vip-edit';
+const title=document.createElement('h4');title.textContent=v.name;
+const makeField=(labelText,id,value,min,max)=>{
+const label=document.createElement('label');label.textContent=labelText;
+const input=document.createElement('input');input.type='number';input.id=id;input.min=String(min);input.step='1';input.required=true;
+if(max!==null)input.max=String(max);
+input.value=String(value);box.append(label,input);
+};
+box.appendChild(title);
+makeField('Capital requis (FC)','vipCapital'+i,v.capital,0,null);
+makeField('Revenu journalier affiché (FC)','vipDaily'+i,v.daily,0,null);
+makeField('Validité de cette offre (jours)','vipDays'+i,v.days,1,3650);
+target.appendChild(box);
+});
+}
+function readVipEditor(){
+const list=[];
+for(let i=0;i<7;i++){
+const cap=$('vipCapital'+i),daily=$('vipDaily'+i),days=$('vipDays'+i);
+if(!cap||!daily||!days)throw new Error('Recharge la page des paramètres VIP et réessaie.');
+const capital=Number(cap.value),dayIncome=Number(daily.value),duration=Number(days.value);
+if(!Number.isFinite(capital)||capital<0||!Number.isFinite(dayIncome)||dayIncome<0||!Number.isInteger(duration)||duration<1||duration>3650)throw new Error('Vérifie les montants et la validité des VIP.');
+list.push({name:'VIP '+(i+1),capital,daily:dayIncome,days:duration});
+}
+return list;
+}
+function getLocalSettings(){
+try{const data=JSON.parse(localStorage.getItem('disneyland_admin_settings')||'{}');if(data&&typeof data==='object')return data;}catch{}
+return {};
 }
 
 async function loadSettings(){
-try{const {data,error}=await supabase.from('disney_settings').select('*').eq('id',1).maybeSingle();if(error)throw error;settings=data||{};}
-catch(e){console.warn('Paramètres indisponibles :',e.message);settings=settings||{};}
-const name=settings.platform_name||'DISNEYLAND RDC';$('headerName').textContent=name;$('welcomeTitle').textContent='Bienvenue sur '+name;document.title=name;
-applyTheme();renderPublicContacts();renderPaymentNumbers();loadVipOffersFromSettings();
+const local=getLocalSettings();localFinancialSettings=local;
+let data=null;
+try{
+const result=await supabase.from('disney_settings').select('*').eq('id',1).maybeSingle();
+if(result.error)console.warn('Paramètres Supabase :',result.error.message);else data=result.data||null;
+}catch(err){console.warn(err);}
+settings={...(data||{}),...local};
+const savedOffers=settings.vip_settings||local.vip_settings;
+vipOffers=normalizeVipOffers(savedOffers);
+const name=settings.platform_name||'DISNEYLAND RDC';
+$('headerName').textContent=name.replace(/\s+RDC$/i,'');
+document.title=name;$('welcomeTitle').textContent='Bienvenue sur '+name+' 🇨🇩';
+applyTheme();renderPublicContacts();renderPaymentNumbers();
+if(isAdmin()){
+$('settingName').value=settings.platform_name||'DISNEYLAND RDC';
+$('settingWhatsApp').value=settings.whatsapp_url||DEFAULT_WHATSAPP;
+$('settingTelegram').value=settings.telegram_url||DEFAULT_TELEGRAM;
+$('settingSupport').value=settings.support_url||DEFAULT_SUPPORT;
+$('settingOpen').value=String(settings.site_open!==false);
+$('settingThemeColor').value=settings.theme_color||'#e91e63';
+$('settingBackgroundColor').value=settings.background_color||'#f5f5f5';
+$('settingAirtelNumber').value=settings.airtel_number||DEFAULT_AIRTEL;
+$('settingAirtelName').value=settings.airtel_name||'BASHIMBE BASHANGWA';
+$('settingOrangeNumber').value=settings.orange_number||DEFAULT_ORANGE;
+$('settingOrangeName').value=settings.orange_name||'JACQUELINE';
+$('settingMpesaNumber').value=settings.mpesa_number||DEFAULT_MPESA;
+$('settingMpesaName').value=settings.mpesa_name||'REGINA';
+$('settingReferral1').value=Number(settings.referral_commission_1??20);
+$('settingReferral2').value=Number(settings.referral_commission_2??3);
+$('settingReferral3').value=Number(settings.referral_commission_3??1);
+$('settingWithdrawalFee').value=Number(settings.withdrawal_fee??15);
+$('settingDepositMinimum').value=Number(settings.deposit_minimum??20000);
+$('settingWithdrawalMinimum').value=Number(settings.withdrawal_minimum??3000);
+$('settingVipDays').value=Number(settings.vip_validity_days??90);
+renderAdminVipEditor();
+}
 }
 
-function loadVipOffersFromSettings(){
-let parsed=settings.vip_offers;
-if(typeof parsed==='string'){try{parsed=JSON.parse(parsed);}catch{parsed=null;}}
-vipOffers=Array.isArray(parsed)&&parsed.length?parsed:defaultVipOffers;
-vipOffers=vipOffers.filter(v=>v&&String(v.name||'').trim()&&Number(v.capital)>0&&Number(v.daily)>=0&&Number(v.days)>0);
-if(!vipOffers.length)vipOffers=defaultVipOffers;
+async function saveReferralCode(code){
+if(!currentUser||!code)return;
+const {error}=await supabase.from('disney_profiles').update({referral_code_used:code}).eq('id',currentUser.id);
+if(error)console.warn(error.message);else if(profile)profile.referral_code_used=code;
 }
 
-async function ensureReferralCode(){
-if(!currentUser||!profile?.id||profile.referral_code)return;
-const generated='DL'+currentUser.id.replace(/-/g,'').slice(0,10).toUpperCase();
-try{const {data,error}=await supabase.from('disney_profiles').update({referral_code:generated}).eq('id',currentUser.id).select('*').maybeSingle();if(error)throw error;if(data)profile=data;}
-catch(e){console.warn('Code de parrainage :',e.message);}
-}
+$('registerForm').addEventListener('submit',async e=>{
+e.preventDefault();clearMessage('registerMessage');
+const name=$('regName').value.trim(),email=$('regEmail').value.trim().toLowerCase();
+const password=$('regPassword').value,confirmCode=$('regConfirm').value;
+const referral=normalizeCode($('regReferral').value||getReferralFromURL());
+if(!/^\d{6}$/.test(password)){message('registerMessage','Le code doit contenir 6 chiffres.');return;}
+if(password!==confirmCode){message('registerMessage','Les codes ne correspondent pas.');return;}
+if(email===ADMIN_EMAIL){message('registerMessage','Cette adresse est réservée à l’administration.');return;}
+$('registerBtn').disabled=true;
+try{
+const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:name,referral_code_used:referral||null}}});
+if(error)throw error;
+if(data.user&&data.session){
+currentUser=data.user;await loadProfile();if(referral)await saveReferralCode(referral);await enterApp();
+}else message('registerMessage','Compte créé. Vérifie ton e-mail si une confirmation est demandée.','success');
+}catch(err){message('registerMessage',friendlyError(err));}
+finally{$('registerBtn').disabled=false;}
+});
+
+$('loginForm').addEventListener('submit',async e=>{
+e.preventDefault();clearMessage('loginMessage');$('loginBtn').disabled=true;
+try{
+const {data,error}=await supabase.auth.signInWithPassword({email:$('loginEmail').value.trim().toLowerCase(),password:$('loginPassword').value});
+if(error)throw error;
+currentUser=data.user;await loadProfile();
+if(profile?.is_blocked===true&&!isAdmin()){await supabase.auth.signOut();currentUser=null;profile=null;throw new Error('Compte bloqué.');}
+await enterApp();
+}catch(err){message('loginMessage',friendlyError(err));}
+finally{$('loginBtn').disabled=false;}
+});
+
+$('forgotBtn').addEventListener('click',async()=>{
+clearMessage('loginMessage');const email=$('loginEmail').value.trim().toLowerCase();
+if(!email){message('loginMessage','Entre ton adresse e-mail.');return;}
+try{
+const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+if(error)throw error;message('loginMessage','Consulte ta boîte e-mail.','success');
+}catch(err){message('loginMessage',friendlyError(err));}
+});
+
 async function loadProfile(){
-if(!currentUser)throw new Error('Connectez-vous pour continuer.');
+if(!currentUser)throw new Error('Connecte-toi.');
 const {data,error}=await supabase.from('disney_profiles').select('*').eq('id',currentUser.id).maybeSingle();
-if(error)throw error;if(!data)throw new Error('Le profil du compte est introuvable.');
-profile=data;await ensureReferralCode();
+if(error)throw error;if(!data)throw new Error('Profil introuvable.');profile=data;
+}
+window.refreshBalance=async()=>{
+try{await loadProfile();displayProfile();await loadMySubscriptions();alert('Solde actualisé.');}
+catch(err){alert(friendlyError(err));}
+};
+async function enterApp(){
+await loadProfile();displayProfile();await loadSettings();
+$('adminIdentity').textContent=isAdmin()?'Connecté : '+ADMIN_EMAIL:'';
+showPage('homePage');await loadMySubscriptions();
 }
 function displayProfile(){
 if(!currentUser)return;
@@ -340,237 +553,65 @@ const name=profile?.full_name||currentUser.user_metadata?.full_name||'Membre';
 $('memberName').textContent=name;$('accountName').textContent=name;$('accountEmail').textContent=currentUser.email||'—';
 $('accountReferral').textContent=profile?.referral_code||'—';$('referralCode').textContent=profile?.referral_code||'Indisponible';
 $('referralLink').value=profile?.referral_code?location.origin+location.pathname+'?ref='+encodeURIComponent(profile.referral_code):'';
-$('balance').textContent=money(profile?.balance);$('vipIncomeTotal').textContent=money(profile?.vip_income_total);
-$('myVIP').textContent=profile?.admin_vip||'Aucun';
+$('balance').textContent=money(profile?.balance);$('vipIncomeTotal').textContent=money(profile?.vip_income_total);$('myVIP').textContent=profile?.admin_vip||'Aucun';
 $('adminHomeBtn').classList.toggle('hidden',!isAdmin());$('adminNavBtn').classList.toggle('hidden',!isAdmin());
 }
-async function enterApp(){
-await loadProfile();await loadSettings();displayProfile();$('adminIdentity').textContent=isAdmin()?'Administrateur connecté : '+ADMIN_EMAIL:'';
-showPage('homePage');await registerReferralIfNeeded();await loadMySubscriptions();
-}
-async function registerReferralIfNeeded(){
-if(!currentUser)return;
-const referral=normalizeCode(profile?.referral_code_used||currentUser.user_metadata?.referral_code_used||'');if(!referral)return;
-try{const {error}=await supabase.rpc('disney_register_referral',{p_referral_code:referral});if(error)console.warn('Parrainage à vérifier :',error.message);}
-catch(e){console.warn('Parrainage :',e.message);}
-}
-window.refreshBalance=async()=>{try{await loadProfile();displayProfile();await loadMySubscriptions();alert('Solde actualisé.');}catch(e){alert(friendlyError(e));}};
 
-$('registerForm').addEventListener('submit',async e=>{
-e.preventDefault();clearMessage('registerMessage');
-const name=$('regName').value.trim(),email=$('regEmail').value.trim().toLowerCase(),password=$('regPassword').value,confirmCode=$('regConfirm').value,referral=normalizeCode($('regReferral').value||getReferralFromURL());
-if(!/^\d{6}$/.test(password)){message('registerMessage','Le code personnel doit contenir exactement 6 chiffres.');return;}
-if(password!==confirmCode){message('registerMessage','Les deux codes ne correspondent pas.');return;}
-$('registerBtn').disabled=true;
-try{
-const {data,error}=await supabase.auth.signUp({email,password,options:{data:{full_name:name,referral_code_used:referral||null}}});
-if(error)throw error;if(!data.user)throw new Error('La création du compte n’a pas abouti.');
-if(data.session){currentUser=data.user;await enterApp();message('accountMessage','Votre compte est prêt.','success');}
-else message('registerMessage','Compte créé. Consultez votre e-mail pour confirmer l’inscription, puis connectez-vous.','success');
-}catch(err){message('registerMessage',friendlyError(err));}finally{$('registerBtn').disabled=false;}
-});
-
-$('loginForm').addEventListener('submit',async e=>{
-e.preventDefault();clearMessage('loginMessage');$('loginBtn').disabled=true;
-try{const {data,error}=await supabase.auth.signInWithPassword({email:$('loginEmail').value.trim().toLowerCase(),password:$('loginPassword').value});if(error)throw error;currentUser=data.user;await enterApp();}
-catch(err){message('loginMessage',friendlyError(err));}finally{$('loginBtn').disabled=false;}
-});
-$('forgotBtn').addEventListener('click',async()=>{
-clearMessage('loginMessage');const email=$('loginEmail').value.trim().toLowerCase();if(!email){message('loginMessage','Saisissez votre adresse e-mail.');return;}
-try{const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});if(error)throw error;message('loginMessage','Consultez votre boîte e-mail pour réinitialiser votre code.','success');}
-catch(err){message('loginMessage',friendlyError(err));}
-});
-
-function renderVIP(){
-const c=$('vipList');if(!c)return;c.replaceChildren();
-if(settings.vip_note){const note=document.createElement('div');note.className='stat';note.textContent=settings.vip_note;c.appendChild(note);}
+function loadVIP(){
+const c=$('vipList');c.replaceChildren();
 vipOffers.forEach(v=>{
 const box=document.createElement('div');box.className='vip';
-const h=document.createElement('h3');h.innerHTML='<i class="fa-solid fa-gem"></i> '+escapeHTML(v.name);
-const capital=document.createElement('div');capital.className='vip-value';capital.textContent=money(v.capital);
-const label=document.createElement('p');label.className='small';label.textContent='Capital requis';
-const meta=document.createElement('div');meta.className='vip-meta';
-const daily=document.createElement('span');daily.textContent='Revenu journalier : '+money(v.daily);
-const days=document.createElement('span');days.textContent='Durée : '+Number(v.days)+' jours';
-meta.append(daily,days);
-const btn=document.createElement('button');btn.className='primary';btn.innerHTML='<i class="fa-solid fa-bolt"></i>ACTIVER MON VIP';
-btn.onclick=()=>activateVIP(v,btn);
-box.append(h,capital,label,meta,btn);c.appendChild(box);
+const h=document.createElement('h3');h.textContent=v.name;
+const p=document.createElement('p');p.textContent='Capital : '+money(v.capital)+' · Revenu journalier affiché : '+money(v.daily)+' · Durée : '+v.days+' jours';
+const total=document.createElement('p');total.textContent='Total théorique sur '+v.days+' jours : '+money(v.daily*v.days);
+const btn=document.createElement('button');btn.textContent='ACTIVER '+v.name;btn.onclick=()=>activateVIP(v);
+box.append(h,p,total,btn);c.appendChild(box);
 });
 }
-function loadVIP(){loadVipOffersFromSettings();renderVIP();}
 window.loadVIP=loadVIP;
+function rpcMessage(data,fallback){return data&&typeof data==='object'&&data.message?data.message:fallback;}
 
-async function activateVIP(v,btn){
-clearMessage('vipMessage');
-if(!currentUser){message('vipMessage','Connectez-vous pour activer un VIP.');return;}
-if(!confirm('Demander l’activation de '+v.name+' pour '+money(v.capital)+' ?'))return;
-btn.disabled=true;
+async function activateVIP(v){
+if(!currentUser){showPage('authPage');return;}
+const btns=[...$('vipList').querySelectorAll('button')];btns.forEach(b=>b.disabled=true);
 try{
-const {data,error}=await supabase.rpc('disney_activate_vip',{p_vip_name:v.name});
+const {data:deps,error}=await supabase.from('disney_deposits').select('id,amount,status,created_at').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(100);
 if(error)throw error;
-message('vipMessage',data?.message||'Demande envoyée. Le VIP sera actif après confirmation côté serveur.','success');
-await loadProfile();displayProfile();await loadMySubscriptions();
-}catch(err){message('vipMessage',friendlyError(err));}
-finally{btn.disabled=false;}
+const approved=(deps||[]).filter(d=>['approved','validated','valide','validé','confirmed'].includes(String(d.status||'').toLowerCase())&&Number(d.amount)>=v.capital);
+if(!approved.length){alert('Aucun dépôt validé suffisant pour '+v.name+'.');return;}
+const {data:subs,error:subError}=await supabase.from('disney_vip_subscriptions').select('deposit_id').eq('user_id',currentUser.id);
+if(subError)throw subError;
+const used=new Set((subs||[]).map(s=>s.deposit_id));
+const deposit=approved.find(d=>!used.has(d.id));
+if(!deposit){alert('Ce dépôt a déjà été utilisé pour activer un VIP.');return;}
+const {data,error:rpcError}=await supabase.rpc('disney_activate_vip',{p_deposit_id:deposit.id,p_vip_name:v.name});
+if(rpcError)throw rpcError;
+alert(rpcMessage(data,'VIP activé.'));await loadProfile();displayProfile();await loadMySubscriptions();
+}catch(err){alert(friendlyError(err));}
+finally{btns.forEach(b=>b.disabled=false);}
 }
 
 async function loadMySubscriptions(){
 if(!currentUser)return;
 try{
 const {data,error}=await supabase.from('disney_vip_subscriptions').select('vip_name,status').eq('user_id',currentUser.id).order('activated_at',{ascending:false});
-if(error)throw error;
-if(data?.length)$('myVIP').textContent=data.filter(x=>x.status==='active').map(x=>x.vip_name).join(', ')||'En attente';
-}catch(e){console.warn('Abonnements VIP :',e.message);}
+if(error)throw error;if(data?.length)$('myVIP').textContent=data.filter(x=>x.status==='active').map(x=>x.vip_name).join(', ')||data[0].vip_name;
+}catch(err){console.warn(err.message);}
 }
-
-window.loadHistory=async()=>{
-const c=$('historyList');setLoading('historyList','Chargement de l’historique...');
-if(!currentUser){c.textContent='Connectez-vous pour voir votre historique.';return;}
-try{
-const [d,w]=await Promise.all([
-supabase.from('disney_deposits').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}),
-supabase.from('disney_withdrawals').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false})
-]);
-if(d.error)throw d.error;if(w.error)throw w.error;
-const rows=[...(d.data||[]).map(x=>({...x,kind:'Dépôt',date:x.created_at})),...(w.data||[]).map(x=>({...x,kind:'Retrait',date:x.created_at}))].sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
-c.replaceChildren();if(!rows.length){showEmpty('historyList','Aucune opération enregistrée.');return;}
-rows.forEach(r=>{const box=document.createElement('div');box.className='operation';const h=document.createElement('h3');h.textContent=r.kind+' · '+money(r.amount);const p=document.createElement('p');p.textContent='Opérateur : '+(r.operator||'—');const p2=document.createElement('p');p2.textContent='Statut : '+(r.status||'en attente');const p3=document.createElement('p');p3.className='small';p3.textContent=r.date?new Date(r.date).toLocaleString('fr-FR'):'Date indisponible';box.append(h,p,p2,p3);c.appendChild(box);});
-}catch(e){c.replaceChildren();const box=document.createElement('div');box.className='message error';box.textContent=friendlyError(e);c.appendChild(box);}
-};
-
-function formatDate(value){if(!value)return'—';const d=new Date(value);return Number.isNaN(d.getTime())?'—':d.toLocaleDateString('fr-FR');}
-function addMemberCard(container,m,level){const box=document.createElement('div');box.className='member';const name=document.createElement('b');name.textContent=m.name||m.full_name||m.nom||'Membre';const date=document.createElement('p');date.className='small';date.textContent='Inscription : '+formatDate(m.date||m.created_at||m.date_inscription);const lvl=document.createElement('p');lvl.textContent='Niveau de parrainage : '+level;box.append(name,date,lvl);container.appendChild(box);}
-
-window.loadTeam=async()=>{
-clearMessage('teamMessage');$('teamCount').textContent='…';$('teamCommission').textContent='…';
-['listLevel1','listLevel2','listLevel3'].forEach(id=>$(id).replaceChildren());
-if(!currentUser){message('teamMessage','Connectez-vous pour consulter votre équipe.');return;}
-try{
-if(!profile)await loadProfile();displayProfile();let result=null,lastError=null;
-for(const fn of ['disney_my_team','disney_get_my_team']){const r=await supabase.rpc(fn);if(!r.error&&r.data){result=r.data;break;}lastError=r.error;}
-if(typeof result==='string'){try{result=JSON.parse(result);}catch{}}
-if(Array.isArray(result))result={membres:result};
-if(!result||typeof result!=='object')throw lastError||new Error('Les données de l’équipe sont indisponibles.');
-const members=Array.isArray(result.membres)?result.membres:Array.isArray(result.members)?result.members:[];
-$('teamCount').textContent=String(Number(result.total??result.nombre_inscrits??result.inscrits??members.length));
-$('teamCommission').textContent=money(Number(result.commissions_equipe??result.commissions_gagnees_fc??result.commissions??0));
-[1,2,3].forEach(level=>{const list=members.filter(m=>Number(m.niveau??m.level??1)===level);$('countLevel'+level).textContent=String(list.length);if(list.length)list.forEach(m=>addMemberCard($('listLevel'+level),m,level));else showEmpty('listLevel'+level,'Aucun membre affiché à ce niveau.');});
-message('teamMessage','Informations de l’équipe actualisées.','success');
-}catch(err){$('teamCount').textContent='0';$('teamCommission').textContent=money(0);message('teamMessage',friendlyError(err));}
-};
-
-window.adminTab=id=>{
-if(!isAdmin()){showPage('homePage');return;}
-['adminDepositsPanel','adminWithdrawalsPanel','adminMembersPanel','adminSettingsPanel'].forEach(x=>$(x).classList.toggle('hidden',x!==id));
-document.querySelectorAll('.tabs button[data-panel]').forEach(b=>b.classList.toggle('active',b.dataset.panel===id));clearMessage('adminMessage');
-};
-window.loadAdmin=async()=>{if(!isAdmin()){showPage('homePage');return;}$('adminIdentity').textContent='Administrateur connecté : '+ADMIN_EMAIL;adminTab('adminDepositsPanel');await loadAdminDeposits();};
-
-function renderAdminRows(containerId,rows,type){
-const c=$(containerId);c.replaceChildren();if(!rows?.length){showEmpty(containerId,'Aucune demande enregistrée.');return;}
-rows.forEach(r=>{
-const box=document.createElement('div');box.className='operation';
-const h=document.createElement('h3');h.textContent=(type==='deposit'?'Dépôt':'Retrait')+' · '+money(r.amount);
-const user=document.createElement('p');user.textContent='Identifiant membre : '+(r.user_id||'—');
-const op=document.createElement('p');op.textContent='Opérateur : '+(r.operator||'—');
-const status=document.createElement('p');status.textContent='Statut : '+(r.status||'—');
-const date=document.createElement('p');date.className='small';date.textContent='Date : '+(r.created_at?new Date(r.created_at).toLocaleString('fr-FR'):'—');box.append(h,user,op,status,date);
-if(type==='deposit'){const ref=document.createElement('p');ref.textContent='Référence du transfert : '+(r.reference||'—');box.appendChild(ref);}
-else{const phone=document.createElement('p');phone.textContent='Numéro de réception : '+(r.phone||r.phone_number||'—');box.appendChild(phone);if(r.fee!=null){const f=document.createElement('p');f.textContent='Frais : '+money(r.fee);box.appendChild(f);}if(r.net_amount!=null){const n=document.createElement('p');n.textContent='Montant net : '+money(r.net_amount);box.appendChild(n);}}
-const state=String(r.status||'').toLowerCase();
-if(['pending','en attente','pending_review','requested'].includes(state)){
-const actions=document.createElement('div');actions.className='panel-actions';
-const yes=document.createElement('button');yes.className='approve';yes.innerHTML='<i class="fa-solid fa-check"></i>VALIDER';yes.onclick=()=>updateRequestStatus(type,r.id,'approved',yes);
-const no=document.createElement('button');no.className='danger';no.innerHTML='<i class="fa-solid fa-xmark"></i>REFUSER';no.onclick=()=>updateRequestStatus(type,r.id,'rejected',no);
-actions.append(yes,no);box.appendChild(actions);
-}
-c.appendChild(box);
-});
-}
-async function loadAdminTable(table,containerId,type){
-setLoading(containerId,'Chargement des demandes...');if(!isAdmin()){setLoading(containerId,'Accès réservé à l’administrateur.');return;}
-try{const {data,error}=await supabase.from(table).select('*').order('created_at',{ascending:false}).limit(500);if(error)throw error;renderAdminRows(containerId,data||[],type);}
-catch(e){setLoading(containerId,friendlyError(e));}
-}
-window.loadAdminDeposits=()=>loadAdminTable('disney_deposits','adminDeposits','deposit');
-window.loadAdminWithdrawals=()=>loadAdminTable('disney_withdrawals','adminWithdrawals','withdraw');
-
-async function updateRequestStatus(type,id,status,btn){
-if(!isAdmin()){alert('Accès réservé à l’administrateur.');return;}
-if(!id){alert('Identifiant de demande introuvable.');return;}
-if(!confirm((status==='approved'?'Confirmer la validation':'Confirmer le refus')+' de cette demande ?'))return;
-btn.disabled=true;
-try{
-const {data,error}=await supabase.rpc('disney_admin_process_request',{p_request_type:type,p_request_id:id,p_status:status});
-if(error)throw error;
-alert(data?.message||'Demande traitée.');
-if(type==='deposit')await loadAdminDeposits();else await loadAdminWithdrawals();
-}catch(e){alert(friendlyError(e));btn.disabled=false;}
-}
-
-window.loadMembers=async()=>{
-if(!isAdmin())return;setLoading('adminMembers','Chargement des membres...');
-try{const {data,error}=await supabase.from('disney_profiles').select('*').limit(1000);if(error)throw error;
-$('adminMemberStats').textContent='Nombre de profils affichés : '+(data||[]).length;const c=$('adminMembers');c.replaceChildren();
-if(!data?.length){showEmpty('adminMembers','Aucun membre trouvé.');return;}
-data.forEach(r=>{const box=document.createElement('div');box.className='operation';const h=document.createElement('h3');h.textContent=r.full_name||'Membre';const p=document.createElement('p');p.textContent='ID : '+(r.id||'—');const p2=document.createElement('p');p2.textContent='Code de parrainage : '+(r.referral_code||'—');const p3=document.createElement('p');p3.textContent='Code utilisé : '+(r.referral_code_used||'—');const p4=document.createElement('p');p4.textContent='Solde : '+money(r.balance);box.append(h,p,p2,p3,p4);c.appendChild(box);});
-}catch(e){setLoading('adminMembers',friendlyError(e));}
-};
-
-window.loadAdminSettings=async()=>{
-if(!isAdmin())return;clearMessage('settingsMessage');await loadSettings();
-$('setPlatformName').value=settings.platform_name||'DISNEYLAND RDC';
-$('setAirtelNumber').value=settings.airtel_number||DEFAULT_AIRTEL;$('setAirtelName').value=settings.airtel_name||'YVETTE';
-$('setOrangeNumber').value=settings.orange_number||DEFAULT_ORANGE;$('setOrangeName').value=settings.orange_name||'JACQUELINE';
-$('setMpesaNumber').value=settings.mpesa_number||DEFAULT_MPESA;$('setMpesaName').value=settings.mpesa_name||'REGINA';
-$('setWithdrawalFee').value=settings.withdrawal_fee??15;$('setDepositMin').value=settings.deposit_minimum??20000;$('setWithdrawalMin').value=settings.withdrawal_minimum??3000;
-$('setRef1').value=settings.referral_commission_1??20;$('setRef2').value=settings.referral_commission_2??3;$('setRef3').value=settings.referral_commission_3??1;
-$('setThemeColor').value=settings.theme_color||'#d4a83e';$('setWhatsApp').value=settings.whatsapp_url||DEFAULT_WHATSAPP;$('setTelegram').value=settings.telegram_url||DEFAULT_TELEGRAM;$('setSupport').value=settings.support_url||DEFAULT_SUPPORT;
-$('setVipNote').value=settings.vip_note||'';
-$('setVipOffers').value=vipOffers.map(v=>[v.name,v.capital,v.daily,v.days].join(' | ')).join('\n');
-};
-
-$('settingsForm').addEventListener('submit',async e=>{
-e.preventDefault();if(!isAdmin()){message('settingsMessage','Accès réservé à l’administrateur.');return;}
-const btn=$('saveSettingsBtn');btn.disabled=true;clearMessage('settingsMessage');
-const values={
-id:1,platform_name:$('setPlatformName').value.trim(),
-airtel_number:$('setAirtelNumber').value.trim(),airtel_name:$('setAirtelName').value.trim(),
-orange_number:$('setOrangeNumber').value.trim(),orange_name:$('setOrangeName').value.trim(),
-mpesa_number:$('setMpesaNumber').value.trim(),mpesa_name:$('setMpesaName').value.trim(),
-withdrawal_fee:Number($('setWithdrawalFee').value),deposit_minimum:Number($('setDepositMin').value),withdrawal_minimum:Number($('setWithdrawalMin').value),
-referral_commission_1:Number($('setRef1').value),referral_commission_2:Number($('setRef2').value),referral_commission_3:Number($('setRef3').value),
-theme_color:$('setThemeColor').value.trim(),whatsapp_url:$('setWhatsApp').value.trim(),telegram_url:$('setTelegram').value.trim(),support_url:$('setSupport').value.trim(),
-vip_note:$('setVipNote').value.trim()
-};
-const parsedOffers=$('setVipOffers').value.split('\n').map(line=>line.trim()).filter(Boolean).map(line=>{
-const parts=line.split('|').map(x=>x.trim());return{name:parts[0],capital:Number(parts[1]),daily:Number(parts[2]),days:Number(parts[3])};
-});
-if(!parsedOffers.length||parsedOffers.some(v=>!v.name||!Number.isFinite(v.capital)||v.capital<=0||!Number.isFinite(v.daily)||v.daily<0||!Number.isFinite(v.days)||v.days<=0)){
-message('settingsMessage','Vérifiez les offres VIP : nom | capital | revenu journalier | durée.');btn.disabled=false;return;
-}
-values.vip_offers=parsedOffers;
-if(!/^#[0-9a-f]{6}$/i.test(values.theme_color)){message('settingsMessage','Entrez une couleur valide, par exemple #d4a83e.');btn.disabled=false;return;}
-for(const k of ['whatsapp_url','telegram_url','support_url'])if(values[k]&&!validHttpUrl(values[k])){message('settingsMessage','Chaque lien doit commencer par https:// ou http://.');btn.disabled=false;return;}
-try{
-const {data,error}=await supabase.from('disney_settings').upsert(values,{onConflict:'id'}).select('*').maybeSingle();
-if(error)throw error;settings=data||values;loadVipOffersFromSettings();applyTheme();renderPublicContacts();renderPaymentNumbers();renderVIP();
-$('headerName').textContent=settings.platform_name||'DISNEYLAND RDC';$('welcomeTitle').textContent='Bienvenue sur '+(settings.platform_name||'DISNEYLAND RDC');document.title=settings.platform_name||'DISNEYLAND RDC';
-message('settingsMessage','Paramètres enregistrés avec succès.','success');
-}catch(err){message('settingsMessage',friendlyError(err));}
-finally{btn.disabled=false;}
-});
 
 $('depositForm').addEventListener('submit',async e=>{
-e.preventDefault();clearMessage('depositMessage');if(!currentUser){message('depositMessage','Connectez-vous avant de déposer.');return;}
-const amount=Number($('depositAmount').value),min=Number(settings.deposit_minimum??20000);
-if(!Number.isFinite(amount)||amount<min){message('depositMessage','Le montant minimum est de '+money(min)+'.');return;}
+e.preventDefault();clearMessage('depositMessage');const amount=Number($('depositAmount').value);
+if(!currentUser){message('depositMessage','Connecte-toi.');return;}
+if(settings.site_open===false&&!isAdmin()){message('depositMessage','La plateforme est fermée.');return;}
+if(profile?.is_blocked===true&&!isAdmin()){message('depositMessage','Compte bloqué.');return;}
+const minimum=Number(settings.deposit_minimum??20000);
+if(!Number.isInteger(amount)||amount<minimum){message('depositMessage','Minimum : '+money(minimum)+'.');return;}
 $('depositBtn').disabled=true;
 try{
 const {error}=await supabase.from('disney_deposits').insert({user_id:currentUser.id,amount,operator:$('depositOperator').value,reference:$('depositReference').value.trim(),status:'pending'});
-if(error)throw error;message('depositMessage','Votre demande a été envoyée pour vérification.','success');$('depositForm').reset();
-}catch(err){message('depositMessage',friendlyError(err));}finally{$('depositBtn').disabled=false;}
+if(error)throw error;message('depositMessage','Demande enregistrée.','success');$('depositForm').reset();
+}catch(err){message('depositMessage',friendlyError(err));}
+finally{$('depositBtn').disabled=false;}
 });
 
 $('withdrawAmount').addEventListener('input',()=>{
@@ -578,27 +619,278 @@ const fee=Number(settings.withdrawal_fee??15),amount=Number($('withdrawAmount').
 $('netAmount').textContent=money(Math.max(0,Math.round(amount*(1-fee/100))));
 });
 $('withdrawForm').addEventListener('submit',async e=>{
-e.preventDefault();clearMessage('withdrawMessage');if(!currentUser){message('withdrawMessage','Connectez-vous avant de demander un retrait.');return;}
-const amount=Number($('withdrawAmount').value),min=Number(settings.withdrawal_minimum??3000);
-if(!Number.isFinite(amount)||amount<min){message('withdrawMessage','Le montant minimum est de '+money(min)+'.');return;}
-if(amount>Number(profile?.balance||0)){message('withdrawMessage','Votre solde disponible est insuffisant.');return;}
+e.preventDefault();clearMessage('withdrawMessage');
+const amount=Number($('withdrawAmount').value),fee=Number(settings.withdrawal_fee??15);
+if(!currentUser){message('withdrawMessage','Connecte-toi.');return;}
+if(settings.site_open===false&&!isAdmin()){message('withdrawMessage','La plateforme est fermée.');return;}
+if(profile?.is_blocked===true&&!isAdmin()){message('withdrawMessage','Compte bloqué.');return;}
+const minimum=Number(settings.withdrawal_minimum??3000);
+if(!Number.isInteger(amount)||amount<minimum){message('withdrawMessage','Minimum : '+money(minimum)+'.');return;}
+if(amount>Number(profile?.balance||0)){message('withdrawMessage','Solde insuffisant.');return;}
 $('withdrawBtn').disabled=true;
 try{
 const {data,error}=await supabase.rpc('disney_request_withdrawal',{p_amount:amount,p_operator:$('withdrawOperator').value,p_phone:$('withdrawPhone').value.trim()});
-if(error)throw error;message('withdrawMessage',data?.message||'Votre demande a été transmise.','success');$('withdrawForm').reset();$('netAmount').textContent=money(0);await loadProfile();displayProfile();
-}catch(err){message('withdrawMessage',friendlyError(err));}finally{$('withdrawBtn').disabled=false;}
+if(error)throw error;
+message('withdrawMessage',rpcMessage(data,'Demande envoyée à l’administration.'),'success');
+$('withdrawForm').reset();$('netAmount').textContent='0 FC';await loadProfile();displayProfile();
+}catch(err){message('withdrawMessage',friendlyError(err));}
+finally{$('withdrawBtn').disabled=false;}
 });
 
-$('logoutBtn').addEventListener('click',async()=>{await supabase.auth.signOut();currentUser=null;profile=null;$('loginPassword').value='';showPage('authPage');});
-supabase.auth.onAuthStateChange(async(event,session)=>{
-if(event==='SIGNED_OUT'){currentUser=null;profile=null;return;}
-if(session?.user&&!currentUser){currentUser=session.user;try{await enterApp();}catch(e){console.warn('Connexion :',e.message);showPage('authPage');message('loginMessage',friendlyError(e));}}
+window.loadHistory=async()=>{
+const c=$('historyList');if(!currentUser){c.textContent='Connecte-toi.';return;}c.textContent='Chargement...';
+try{
+const [d,w,s]=await Promise.all([
+supabase.from('disney_deposits').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}),
+supabase.from('disney_withdrawals').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}),
+supabase.from('disney_vip_subscriptions').select('*').eq('user_id',currentUser.id).order('activated_at',{ascending:false})
+]);
+if(d.error)throw d.error;if(w.error)throw w.error;if(s.error)throw s.error;
+c.replaceChildren();
+const rows=[...(d.data||[]).map(x=>({...x,kind:'Dépôt',date:x.created_at})),...(w.data||[]).map(x=>({...x,kind:'Retrait',date:x.created_at})),...(s.data||[]).map(x=>({...x,kind:'Activation '+x.vip_name,amount:x.investment,date:x.activated_at}))].sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
+if(!rows.length){c.textContent='Aucune transaction.';return;}
+rows.forEach(r=>{
+const b=document.createElement('div');b.className='vip';
+const date=document.createElement('p');date.className='small';date.textContent='Date et heure : '+formatDateTime(r.date);
+const details=document.createElement('p');details.textContent=r.kind+' — '+money(r.amount)+' — '+(r.status||'en attente');
+b.append(details,date);c.appendChild(b);
 });
+}catch(err){c.textContent=friendlyError(err);}
+};
+
+function formatDateTime(value){
+if(!value)return '—';const d=new Date(value);if(Number.isNaN(d.getTime()))return '—';
+return new Intl.DateTimeFormat('fr-FR',{dateStyle:'short',timeStyle:'short'}).format(d);
+}
+
+window.loadTeam=async()=>{
+clearMessage('teamMessage');$('teamStats').classList.add('hidden');
+['listLevel1','listLevel2','listLevel3'].forEach(id=>$(id).replaceChildren());
+['countLevel1','countLevel2','countLevel3'].forEach(id=>$(id).textContent='0');
+if(!currentUser){message('teamMessage','Connecte-toi.');return;}
+$('referralCode').textContent=profile?.referral_code||'Indisponible';
+$('referralLink').value=profile?.referral_code?location.origin+location.pathname+'?ref='+encodeURIComponent(profile.referral_code):'';
+message('teamMessage','Chargement des membres...','success');
+try{
+const {data,error}=await supabase.rpc('disney_my_team');if(error)throw error;
+let result=data;if(typeof result==='string'){try{result=JSON.parse(result)}catch{}}
+if(!result||result.success===false)throw new Error(result?.message||'Impossible de charger les membres.');
+const members=Array.isArray(result.membres)?result.membres:[];
+$('teamStats').textContent='Inscrits : '+Number(result.total??members.length)+' · Comptes validés : '+Number(result.valides??0)+' · Membres avec dépôt validé : '+Number(result.recharges??0);
+$('teamStats').classList.remove('hidden');
+const target=$('listLevel1');target.replaceChildren();
+if(!members.length)target.textContent='Aucun membre associé à ton code pour le moment.';
+members.forEach(m=>{
+const box=document.createElement('div');box.className='member';
+const n=document.createElement('b');n.textContent=m.nom||m.full_name||'Membre';
+const s=document.createElement('p');s.textContent='Statut : '+(m.statut||m.status||'inscrit');
+const d=document.createElement('p');d.textContent='Dépôt validé : '+((m.a_recharge||m.has_approved_deposit)?'Oui':'Non');
+const date=document.createElement('p');date.className='small';date.textContent='Inscription : '+(m.inscrit_le||m.created_at?formatDateTime(m.inscrit_le||m.created_at):'—');
+box.append(n,s,d,date);target.appendChild(box);
+});
+$('countLevel1').textContent=members.length;
+message('teamMessage',members.length?'Équipe actualisée : '+members.length+' membre(s).':'Aucun membre associé à ton code pour le moment.','success');
+}catch(err){message('teamMessage',friendlyError(err));}
+};
+
+window.loadAdmin=async()=>{
+if(!isAdmin()){showPage('homePage');return;}
+clearMessage('adminMessage');$('adminIdentity').textContent='Connecté : '+ADMIN_EMAIL;
+$('adminDeposits').textContent='Chargement...';$('adminWithdrawals').textContent='Chargement...';
+try{
+const [d,w]=await Promise.all([
+supabase.from('disney_deposits').select('*').order('created_at',{ascending:false}).limit(200),
+supabase.from('disney_withdrawals').select('*').order('created_at',{ascending:false}).limit(200)
+]);
+if(d.error)throw d.error;if(w.error)throw w.error;
+renderAdminRows(d.data||[],'adminDeposits','deposit');
+renderAdminRows(w.data||[],'adminWithdrawals','withdraw');
+await loadMembers();await loadSettings();
+}catch(err){message('adminMessage',friendlyError(err));}
+};
+
+function renderAdminRows(rows,targetId,kind){
+const target=$(targetId);target.replaceChildren();
+if(!rows.length){target.textContent='Aucune demande.';return;}
+rows.forEach(row=>{
+const box=document.createElement('div');box.className='operation';
+const title=document.createElement('h3');title.textContent=(kind==='deposit'?'Dépôt':'Retrait')+' — '+money(row.amount);
+const details=document.createElement('p');details.textContent='Membre ID : '+row.user_id+' · Statut : '+(row.status||'pending')+' · Opérateur : '+(row.operator||'—')+(kind==='deposit'?' · Référence : '+(row.reference||'—'):' · Numéro : '+(row.phone||'—'));
+const date=document.createElement('p');date.className='small';date.textContent='Date et heure : '+formatDateTime(row.created_at);
+box.append(title,details,date);
+if(row.status==='pending'){
+const yes=document.createElement('button');yes.className='approve';yes.textContent=kind==='deposit'?'VALIDER LE DÉPÔT':'VALIDER LE RETRAIT';yes.onclick=()=>processTransaction(kind,row.id,'approved');
+const no=document.createElement('button');no.className='danger';no.textContent='REJETER';no.onclick=()=>processTransaction(kind,row.id,'rejected');
+box.append(yes,no);
+}
+target.appendChild(box);
+});
+}
+async function processTransaction(kind,id,decision){
+if(!isAdmin()||!confirm((decision==='approved'?'Valider':'Rejeter')+' cette demande ?'))return;
+clearMessage('adminMessage');
+try{
+const fn=kind==='deposit'?'disney_admin_deposit':'disney_admin_withdrawal';
+const args=kind==='deposit'?{p_deposit_id:id,p_decision:decision}:{p_withdrawal_id:id,p_decision:decision};
+const {data,error}=await supabase.rpc(fn,args);if(error)throw error;
+message('adminMessage',rpcMessage(data,'Demande traitée.'),'success');await loadAdmin();
+}catch(err){message('adminMessage',friendlyError(err));}
+}
+
+window.loadMembers=async()=>{
+if(!isAdmin())return;$('adminMembers').textContent='Chargement...';
+try{
+const {data,error}=await supabase.from('disney_profiles').select('*').limit(1000);if(error)throw error;
+const rows=data||[];$('adminMemberStats').textContent='Membres affichés : '+rows.length;
+const target=$('adminMembers');target.replaceChildren();
+if(!rows.length){target.textContent='Aucun membre trouvé.';return;}
+rows.forEach(r=>{
+const box=document.createElement('div');box.className='operation';
+const title=document.createElement('h3');title.textContent=r.full_name||'Membre';
+const details=document.createElement('p');details.textContent='ID : '+r.id+' · E-mail : '+(r.email||'non affiché')+' · Solde : '+money(r.balance)+' · VIP : '+(r.admin_vip||'Aucun');
+const referral=document.createElement('p');referral.textContent='Code personnel : '+(r.referral_code||'—')+' · Code utilisé à l’inscription : '+(r.referral_code_used||'Aucun');
+const status=document.createElement('p');status.textContent='Compte : '+(r.is_blocked?'BLOQUÉ':'actif')+' · Rôle : '+(r.member_role||'member');
+const selectBtn=document.createElement('button');selectBtn.textContent='UTILISER CET ID';selectBtn.onclick=()=>$('vipUserId').value=r.id;
+const blockBtn=document.createElement('button');blockBtn.className=r.is_blocked?'approve':'danger';blockBtn.textContent=r.is_blocked?'DÉBLOQUER':'BLOQUER';blockBtn.onclick=()=>setMemberBlocked(r.id,!r.is_blocked);
+const promoterBtn=document.createElement('button');promoterBtn.className=r.member_role==='promoter'?'approve':'secondary';promoterBtn.textContent=r.member_role==='promoter'?'RETIRER PROMOTEUR':'DÉSIGNER PROMOTEUR';promoterBtn.onclick=()=>setPromoter(r.id,r.member_role!=='promoter');
+box.append(title,details,referral,status,selectBtn,blockBtn,promoterBtn);target.appendChild(box);
+});
+}catch(err){$('adminMembers').textContent=friendlyError(err);}
+};
+
+async function setPromoter(userId,makePromoter){
+if(!isAdmin()||!confirm((makePromoter?'Désigner':'Retirer')+' le rôle promoteur ?'))return;
+try{
+const {error}=await supabase.rpc('disney_admin_set_promoter',{p_user_id:userId,p_is_promoter:makePromoter});
+if(error)throw error;message('adminMessage','Rôle mis à jour.','success');await loadMembers();
+}catch(err){message('adminMessage',friendlyError(err));}
+}
+async function setMemberBlocked(userId,blocked){
+if(!isAdmin()||!confirm((blocked?'Bloquer':'Débloquer')+' ce membre ?'))return;
+try{
+const {error}=await supabase.rpc('disney_admin_block_member',{p_user_id:userId,p_blocked:blocked});
+if(error)throw error;message('adminMessage','Statut mis à jour.','success');await loadMembers();
+}catch(err){message('adminMessage',friendlyError(err));}
+}
+
+$('assignVipForm').addEventListener('submit',async e=>{
+e.preventDefault();if(!isAdmin())return;
+try{
+const {error}=await supabase.rpc('disney_admin_assign_vip',{p_user_id:$('vipUserId').value.trim(),p_vip_name:$('vipName').value});
+if(error)throw error;message('adminMessage','VIP enregistré.','success');await loadMembers();
+}catch(err){message('adminMessage',friendlyError(err));}
+});
+
+$('adminResetForm').addEventListener('submit',async e=>{
+e.preventDefault();if(!isAdmin())return;
+try{
+const {error}=await supabase.auth.resetPasswordForEmail($('resetMemberEmail').value.trim().toLowerCase(),{redirectTo:location.origin+location.pathname});
+if(error)throw error;message('adminMessage','Lien de réinitialisation envoyé si autorisé.','success');
+}catch(err){message('adminMessage',friendlyError(err));}
+});
+
+$('settingsForm').addEventListener('submit',async e=>{
+e.preventDefault();if(!isAdmin())return;
+clearMessage('adminMessage');$('saveSettingsBtn').disabled=true;
+try{
+const referral1=Number($('settingReferral1').value);
+const referral2=Number($('settingReferral2').value);
+const referral3=Number($('settingReferral3').value);
+const withdrawalFee=Number($('settingWithdrawalFee').value);
+const depositMinimum=Number($('settingDepositMinimum').value);
+const withdrawalMinimum=Number($('settingWithdrawalMinimum').value);
+const vipDays=Number($('settingVipDays').value);
+for(const value of [referral1,referral2,referral3,withdrawalFee]){
+if(!Number.isFinite(value)||value<0||value>100)throw new Error('Les pourcentages doivent être compris entre 0 et 100.');
+}
+if(!Number.isFinite(depositMinimum)||depositMinimum<0||!Number.isFinite(withdrawalMinimum)||withdrawalMinimum<0)throw new Error('Vérifie les montants minimums.');
+if(!Number.isInteger(vipDays)||vipDays<1||vipDays>3650)throw new Error('La durée par défaut doit être comprise entre 1 et 3650 jours.');
+const newOffers=readVipEditor();
+const newSettings={
+platform_name:$('settingName').value.trim()||'DISNEYLAND RDC',
+whatsapp_url:$('settingWhatsApp').value.trim()||DEFAULT_WHATSAPP,
+telegram_url:$('settingTelegram').value.trim()||DEFAULT_TELEGRAM,
+support_url:$('settingSupport').value.trim()||DEFAULT_SUPPORT,
+site_open:$('settingOpen').value==='true',
+theme_color:$('settingThemeColor').value||'#e91e63',
+background_color:$('settingBackgroundColor').value||'#f5f5f5',
+airtel_number:$('settingAirtelNumber').value.trim()||DEFAULT_AIRTEL,
+airtel_name:$('settingAirtelName').value.trim()||'BASHIMBE BASHANGWA',
+orange_number:$('settingOrangeNumber').value.trim()||DEFAULT_ORANGE,
+orange_name:$('settingOrangeName').value.trim()||'JACQUELINE',
+mpesa_number:$('settingMpesaNumber').value.trim()||DEFAULT_MPESA,
+mpesa_name:$('settingMpesaName').value.trim()||'REGINA',
+vip_settings:newOffers,
+referral_commission_1:referral1,
+referral_commission_2:referral2,
+referral_commission_3:referral3,
+withdrawal_fee:withdrawalFee,
+deposit_minimum:depositMinimum,
+withdrawal_minimum:withdrawalMinimum,
+vip_validity_days:vipDays
+};
+
+const {error:rpcError}=await supabase.rpc('disney_admin_update_full_settings',{
+p_name:newSettings.platform_name,
+p_whatsapp:newSettings.whatsapp_url,
+p_telegram:newSettings.telegram_url,
+p_support:newSettings.support_url,
+p_site_open:newSettings.site_open,
+p_theme_color:newSettings.theme_color,
+p_background_color:newSettings.background_color,
+p_airtel_number:newSettings.airtel_number,
+p_airtel_name:newSettings.airtel_name,
+p_orange_number:newSettings.orange_number,
+p_orange_name:newSettings.orange_name,
+p_mpesa_number:newSettings.mpesa_number,
+p_mpesa_name:newSettings.mpesa_name
+});
+if(rpcError)throw rpcError;
+
+const {error:financialError}=await supabase.rpc('update_disney_settings',{
+p_vip_settings:newOffers,
+p_referral_commission_1:referral1,
+p_referral_commission_2:referral2,
+p_referral_commission_3:referral3,
+p_withdrawal_fee:withdrawalFee,
+p_vip_validity_days:vipDays
+});
+if(financialError)throw financialError;
+
+settings={...settings,...newSettings};localFinancialSettings={...localFinancialSettings,...newSettings};
+localStorage.setItem('disneyland_admin_settings',JSON.stringify(localFinancialSettings));
+vipOffers=normalizeVipOffers(newOffers);
+applyTheme();renderAdminVipEditor();loadVIP();renderPublicContacts();renderPaymentNumbers();
+message('adminMessage','Paramètres enregistrés. Les liens et valeurs sont appliqués sur cet appareil.','success');
+}catch(err){message('adminMessage','Enregistrement incomplet : '+friendlyError(err));}
+finally{$('saveSettingsBtn').disabled=false;}
+});
+
+$('logoutBtn').addEventListener('click',async()=>{
+const {error}=await supabase.auth.signOut();
+if(error){message('accountMessage',friendlyError(error));return;}
+currentUser=null;profile=null;settings={};$('loginPassword').value='';showPage('authPage');
+});
+
+supabase.auth.onAuthStateChange(async(_event,session)=>{
+if(!session)return;
+if(!currentUser){currentUser=session.user;try{await enterApp();}catch(err){message('loginMessage',friendlyError(err));}}
+});
+
 const {data:{session},error:sessionError}=await supabase.auth.getSession();
 if(sessionError){showPage('authPage');message('loginMessage',friendlyError(sessionError));}
-else if(session?.user){currentUser=session.user;try{await enterApp();}catch(e){showPage('authPage');message('loginMessage',friendlyError(e));}}
-else showPage('authPage');
+else if(session?.user){
+currentUser=session.user;
+try{
+await loadProfile();
+if(profile?.is_blocked===true&&!isAdmin()){
+await supabase.auth.signOut();currentUser=null;profile=null;showPage('authPage');message('loginMessage','Compte bloqué.');
+}else await enterApp();
+}catch(err){currentUser=null;profile=null;showPage('authPage');message('loginMessage',friendlyError(err));}
+}else showPage('authPage');
+
 loadVIP();
+renderPublicContacts();
 </script>
 </body>
 </html>
