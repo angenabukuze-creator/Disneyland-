@@ -1,1 +1,5 @@
-
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="100" fill="#111111"/>
+  <path d="M256 75 292 183 405 183 314 250 349 358 256 291 163 358 198 250 107 183 220 183Z" fill="#ffd600"/>
+  <text x="256" y="430" font-size="48" font-family="Arial" font-weight="bold" text-anchor="middle" fill="#ffffff">RDC</text>
+</svg>
