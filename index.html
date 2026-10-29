@@ -353,7 +353,7 @@ const supabase=createClient(
 );
 
 const ADMIN_EMAIL='angenabukuze@gmail.com';
-const DEFAULT_WHATSAPP='https://chat.whatsapp.com/BfmsplXRtMaH9emWzeFP2y?s=cl&p=a&mlu=4&ilr=4&iam=0';
+const DEFAULT_WHATSAPP='https://chat.whatsapp.com/KBYVbUFomvp1t1L0zm041M?s=cl&p=a&mlu=4&ilr=4&iam=2';
 const DEFAULT_TELEGRAM='https://t.me/+dbpiuZGoZUE4MDhk';
 const DEFAULT_SUPPORT='https://wa.me/243973905135';
 const DEFAULT_AIRTEL='0973087965';
@@ -368,7 +368,7 @@ const money=n=>new Intl.NumberFormat('fr-FR').format(Number(n)||0)+' FC';
 const isAdmin=()=>String(currentUser?.email||'').toLowerCase()===ADMIN_EMAIL;
 
 const defaultVipOffers=[
-  {name:'VIP 0',capital:10000,daily:1500,days:30},
+{name:'VIP 0',capital:10000,daily:1500,days:30},
 {name:'VIP 1',capital:20000,daily:2500,days:90},
 {name:'VIP 2',capital:40000,daily:6000,days:90},
 {name:'VIP 3',capital:60000,daily:8500,days:90},
