@@ -1,196 +1,479 @@
-/* =====================================================
-   MON ÉQUIPE — VERSION ADAPTÉE À SUPABASE
-   Fonction SQL : disney_my_team()
-   Niveaux : 1, 2 et 3
-   ===================================================== */
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111111">
+<meta name="description" content="DISNEYLAND RDC - Mon équipe">
+<title>DISNEYLAND RDC | Mon équipe</title>
 
-window.loadTeam = async () => {
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    clearMessage('teamMessage');
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f3f4f6;
+  color:#222;
+}
+header{
+  background:#111;
+  color:white;
+  padding:20px 15px;
+  text-align:center;
+}
+header h1{margin:0;font-size:23px}
+header p{margin:7px 0 0;color:#ddd;font-size:13px}
+.container{max-width:700px;margin:auto;padding:15px}
+.card{
+  background:white;
+  border-radius:13px;
+  padding:16px;
+  margin-bottom:15px;
+  box-shadow:0 2px 9px #00000012;
+}
+h2{font-size:18px;margin:0 0 13px}
+.stats{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+.stat{
+  background:#f0f5f1;
+  padding:15px 8px;
+  border-radius:10px;
+  text-align:center;
+}
+.stat strong{
+  display:block;
+  font-size:23px;
+  color:#16803d;
+}
+.stat span{font-size:12px;color:#555}
+button{
+  border:0;
+  border-radius:9px;
+  padding:12px 15px;
+  background:#16803d;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+button:disabled{opacity:.5}
+input{
+  width:100%;
+  padding:12px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  margin:8px 0;
+}
+.member{
+  padding:12px 0;
+  border-bottom:1px solid #eee;
+}
+.member:last-child{border-bottom:0}
+.member strong{display:block;font-size:14px}
+.member small{display:block;color:#777;margin-top:5px}
+.empty{color:#888;font-size:13px;padding:10px 0}
+.message{font-size:13px;margin-top:12px;white-space:pre-wrap}
+.error{color:#c62828}
+.success{color:#16803d}
+.level-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.badge{
+  background:#e7f4ea;
+  color:#16803d;
+  border-radius:20px;
+  padding:5px 10px;
+  font-size:12px;
+}
+#loginBox{display:none}
+#teamContent{display:none}
+</style>
+</head>
 
-    const containers = {
-        1: $('listLevel1'),
-        2: $('listLevel2'),
-        3: $('listLevel3')
-    };
+<body>
 
-    const counters = {
-        1: $('countLevel1'),
-        2: $('countLevel2'),
-        3: $('countLevel3')
-    };
+<header>
+  <h1>DISNEYLAND RDC</h1>
+  <p>MON ÉQUIPE</p>
+</header>
 
-    Object.values(containers).forEach(el => el.replaceChildren());
-    Object.values(counters).forEach(el => el.textContent = '0');
+<main class="container">
 
-    $('teamStats').classList.add('hidden');
+  <section class="card" id="loginBox">
+    <h2>Connexion</h2>
+    <p>Connectez-vous pour afficher les membres de votre équipe.</p>
+    <input id="email" type="email" placeholder="Adresse e-mail">
+    <input id="password" type="password" placeholder="Mot de passe">
+    <button id="loginButton" onclick="login()">Se connecter</button>
+    <div id="loginMessage" class="message"></div>
+  </section>
 
-    if (!currentUser) {
-        message('teamMessage', 'Connecte-toi pour consulter ton équipe.');
-        return;
+  <section id="teamContent">
+
+    <div class="card">
+      <h2>Mon équipe</h2>
+      <div class="stats">
+        <div class="stat">
+          <strong id="totalTeam">0</strong>
+          <span>Membres au total</span>
+        </div>
+        <div class="stat">
+          <strong id="validTeam">0</strong>
+          <span>Membres validés</span>
+        </div>
+        <div class="stat">
+          <strong id="rechargeTeam">0</strong>
+          <span>Recharges</span>
+        </div>
+        <div class="stat">
+          <strong id="commissionTeam">0</strong>
+          <span>Commissions</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Mon code de parrainage</h2>
+      <input id="referralCode" readonly placeholder="Chargement du code...">
+      <button onclick="copyCode()">Copier le code</button>
+      <p id="referralLink" style="font-size:12px;word-break:break-all"></p>
+      <button onclick="copyLink()">Copier le lien</button>
+    </div>
+
+    <div class="card">
+      <div class="level-title">
+        <h2>Niveau 1</h2>
+        <span class="badge" id="countLevel1">0 membre(s)</span>
+      </div>
+      <div id="listLevel1" class="empty">Chargement...</div>
+    </div>
+
+    <div class="card">
+      <div class="level-title">
+        <h2>Niveau 2</h2>
+        <span class="badge" id="countLevel2">0 membre(s)</span>
+      </div>
+      <div id="listLevel2" class="empty">Chargement...</div>
+    </div>
+
+    <div class="card">
+      <div class="level-title">
+        <h2>Niveau 3</h2>
+        <span class="badge" id="countLevel3">0 membre(s)</span>
+      </div>
+      <div id="listLevel3" class="empty">Chargement...</div>
+    </div>
+
+    <div class="card">
+      <button onclick="loadTeam()" id="refreshButton">Actualiser mon équipe</button>
+      <button onclick="logout()" style="background:#555;margin-left:5px">Déconnexion</button>
+      <div id="teamMessage" class="message"></div>
+    </div>
+
+  </section>
+</main>
+
+<script>
+const SUPABASE_URL = "https://pmgvvrfwurjlqbpnboxw.supabase.co";
+const SUPABASE_KEY = "sb_publishable_aHjw0ajhca0EVC8lKvYqwA_A7nqUvG9";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+let referralUrl = "";
+
+function showMessage(id, message, type="") {
+  const element = document.getElementById(id);
+  element.textContent = message;
+  element.className = "message " + type;
+}
+
+async function checkSession() {
+  const {data, error} = await supabaseClient.auth.getSession();
+
+  if (error) {
+    showMessage("loginMessage", error.message, "error");
+    return;
+  }
+
+  if (data.session) {
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("teamContent").style.display = "block";
+    await loadTeam();
+  } else {
+    document.getElementById("loginBox").style.display = "block";
+    document.getElementById("teamContent").style.display = "none";
+  }
+}
+
+async function login() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  if (!email || !password) {
+    showMessage("loginMessage", "Veuillez remplir les deux champs.", "error");
+    return;
+  }
+
+  const button = document.getElementById("loginButton");
+  button.disabled = true;
+  button.textContent = "Connexion...";
+
+  const {error} = await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  button.disabled = false;
+  button.textContent = "Se connecter";
+
+  if (error) {
+    showMessage("loginMessage", error.message, "error");
+    return;
+  }
+
+  await checkSession();
+}
+
+async function logout() {
+  await supabaseClient.auth.signOut();
+  location.reload();
+}
+
+function getArray(result) {
+  if (Array.isArray(result)) return result;
+  if (result && Array.isArray(result.membres)) return result.membres;
+  if (result && Array.isArray(result.members)) return result.members;
+  if (result && Array.isArray(result.equipe)) return result.equipe;
+  if (result && Array.isArray(result.team)) return result.team;
+  return [];
+}
+
+function getLevel(member) {
+  const value =
+    member.niveau ??
+    member.level ??
+    member.niveau_equipe ??
+    member.team_level ??
+    member.profondeur ??
+    1;
+
+  const level = Number(value);
+  return Number.isFinite(level) ? level : 1;
+}
+
+function getMemberName(member) {
+  return member.nom ||
+    member.full_name ||
+    member.name ||
+    member.nom_complet ||
+    member.email ||
+    member.telephone ||
+    "Membre";
+}
+
+function getMemberDate(member) {
+  const date =
+    member.date_inscription ||
+    member.created_at ||
+    member.date_creation ||
+    member.inscrit_le;
+
+  if (!date) return "Date non disponible";
+
+  const parsed = new Date(date);
+  if (Number.isNaN(parsed.getTime())) return String(date);
+
+  return parsed.toLocaleDateString("fr-FR");
+}
+
+function renderMembers(members, level) {
+  const container = document.getElementById("listLevel" + level);
+  const count = document.getElementById("countLevel" + level);
+
+  const filtered = members.filter(member => getLevel(member) === level);
+
+  count.textContent = filtered.length + " membre(s)";
+
+  if (!filtered.length) {
+    container.className = "empty";
+    container.textContent = "Aucun membre dans ce niveau.";
+    return;
+  }
+
+  container.className = "";
+
+  container.innerHTML = filtered.map(member => {
+    const name = escapeHTML(getMemberName(member));
+    const email = escapeHTML(member.email || "");
+    const phone = escapeHTML(member.telephone || member.phone || "");
+    const date = escapeHTML(getMemberDate(member));
+
+    return `
+      <div class="member">
+        <strong>${name}</strong>
+        ${email ? `<small>E-mail : ${email}</small>` : ""}
+        ${phone ? `<small>Téléphone : ${phone}</small>` : ""}
+        <small>Inscription : ${date}</small>
+      </div>
+    `;
+  }).join("");
+}
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, character => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+  }[character]));
+}
+
+async function loadProfile() {
+  const {data: userData} = await supabaseClient.auth.getUser();
+  const user = userData.user;
+
+  if (!user) return;
+
+  const {data, error} = await supabaseClient
+    .from("disney_profiles")
+    .select("*")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (error) {
+    showMessage("teamMessage", "Erreur du profil : " + error.message, "error");
+    return;
+  }
+
+  if (data) {
+    const code = data.referral_code || "";
+    document.getElementById("referralCode").value = code;
+
+    referralUrl = code
+      ? location.origin + location.pathname + "?ref=" + encodeURIComponent(code)
+      : "";
+
+    document.getElementById("referralLink").textContent = referralUrl;
+  }
+}
+
+async function loadTeam() {
+  const button = document.getElementById("refreshButton");
+  button.disabled = true;
+  button.textContent = "Chargement...";
+
+  showMessage("teamMessage", "Chargement de votre équipe...");
+
+  try {
+    await loadProfile();
+
+    const {data, error} = await supabaseClient.rpc("disney_my_team");
+
+    if (error) {
+      throw error;
     }
 
-    if (!profile?.referral_code) {
-        message('teamMessage', 'Ton code de parrainage est indisponible.');
-        return;
-    }
+    const members = getArray(data);
 
-    $('referralCode').textContent = profile.referral_code;
+    renderMembers(members, 1);
+    renderMembers(members, 2);
+    renderMembers(members, 3);
 
-    $('referralLink').value =
-        location.origin +
-        location.pathname +
-        '?ref=' +
-        encodeURIComponent(profile.referral_code);
+    const totalFromRPC =
+      data && !Array.isArray(data)
+        ? Number(data.total ?? data.total_membres ?? NaN)
+        : NaN;
 
-    message('teamMessage', 'Chargement de ton équipe...', 'success');
+    const validFromRPC =
+      data && !Array.isArray(data)
+        ? Number(data.valides ?? data.total_valides ?? NaN)
+        : NaN;
 
-    try {
+    const rechargeFromRPC =
+      data && !Array.isArray(data)
+        ? Number(data.recharges ?? data.total_recharges ?? NaN)
+        : NaN;
 
-        // Appel de la fonction SQL enregistrée dans Supabase
-        const { data, error } = await supabase.rpc('disney_my_team');
+    document.getElementById("totalTeam").textContent =
+      Number.isFinite(totalFromRPC) ? totalFromRPC : members.length;
 
-        if (error) throw error;
+    document.getElementById("validTeam").textContent =
+      Number.isFinite(validFromRPC)
+        ? validFromRPC
+        : members.filter(m =>
+            m.valide === true ||
+            m.validated === true ||
+            m.statut === "validé"
+          ).length;
 
-        let result = data;
+    document.getElementById("rechargeTeam").textContent =
+      Number.isFinite(rechargeFromRPC) ? rechargeFromRPC : "—";
 
-        if (typeof result === 'string') {
-            result = JSON.parse(result);
-        }
+    document.getElementById("commissionTeam").textContent =
+      data && !Array.isArray(data)
+        ? (data.commissions ?? data.total_commissions ?? "—")
+        : "—";
 
-        if (!result || result.succes === false || result.success === false) {
-            throw new Error(
-                result?.message || 'Impossible de récupérer ton équipe.'
-            );
-        }
+    showMessage(
+      "teamMessage",
+      members.length
+        ? "Votre équipe a été actualisée."
+        : "Aucun membre retourné par la fonction disney_my_team.",
+      "success"
+    );
 
-        // Membres renvoyés par Supabase
-        const members = Array.isArray(result.membres)
-            ? result.membres
-            : [];
+  } catch (error) {
+    showMessage(
+      "teamMessage",
+      "Impossible de charger l'équipe : " +
+      (error.message || "Erreur inconnue"),
+      "error"
+    );
+  } finally {
+    button.disabled = false;
+    button.textContent = "Actualiser mon équipe";
+  }
+}
 
-        // Répartition réelle par niveau
-        const levels = {
-            1: members.filter(m => Number(m.niveau) === 1),
-            2: members.filter(m => Number(m.niveau) === 2),
-            3: members.filter(m => Number(m.niveau) === 3)
-        };
+async function copyCode() {
+  const code = document.getElementById("referralCode").value;
+  if (!code) return alert("Aucun code de parrainage disponible.");
 
-        // Pourcentages de commission
-        const percentages = {
-            1: Number(result.niveau1 ?? 20),
-            2: Number(result.niveau2 ?? 3),
-            3: Number(result.niveau3 ?? 1)
-        };
+  try {
+    await navigator.clipboard.writeText(code);
+    alert("Code copié !");
+  } catch {
+    alert("Impossible de copier le code.");
+  }
+}
 
-        $('level1Percent').textContent = percentages[1];
-        $('level2Percent').textContent = percentages[2];
-        $('level3Percent').textContent = percentages[3];
+async function copyLink() {
+  if (!referralUrl) return alert("Aucun lien de parrainage disponible.");
 
-        // Affichage des membres de chaque niveau
-        [1, 2, 3].forEach(level => {
+  try {
+    await navigator.clipboard.writeText(referralUrl);
+    alert("Lien de parrainage copié !");
+  } catch {
+    alert("Impossible de copier le lien.");
+  }
+}
 
-            const list = levels[level];
+supabaseClient.auth.onAuthStateChange(() => {
+  checkSession();
+});
 
-            counters[level].textContent = list.length;
+checkSession();
+</script>
 
-            if (!list.length) {
-                containers[level].textContent =
-                    'Aucun membre dans ce niveau pour le moment.';
-                return;
-            }
-
-            list.forEach(member => {
-
-                const box = document.createElement('div');
-                box.className = 'member';
-
-                const name = document.createElement('b');
-                name.textContent = member.nom || 'Membre';
-
-                const levelText = document.createElement('p');
-                levelText.textContent = 'Niveau : ' + member.niveau;
-
-                const email = document.createElement('p');
-                email.textContent = 'E-mail : ' + (member.email || 'Non renseigné');
-
-                const phone = document.createElement('p');
-                phone.textContent = 'Téléphone : ' +
-                    (member.telephone || 'Non renseigné');
-
-                const date = document.createElement('p');
-                date.className = 'small';
-                date.textContent = 'Inscription : ' +
-                    formatDateTime(member.date_inscription);
-
-                box.append(
-                    name,
-                    levelText,
-                    email,
-                    phone,
-                    date
-                );
-
-                containers[level].appendChild(box);
-
-            });
-
-        });
-
-        // Statistiques générales de l'équipe
-        const total = Number(result.total ?? members.length);
-
-        const total1 = Number(
-            result.total_niveau1 ?? levels[1].length
-        );
-
-        const total2 = Number(
-            result.total_niveau2 ?? levels[2].length
-        );
-
-        const total3 = Number(
-            result.total_niveau3 ?? levels[3].length
-        );
-
-        const stats = $('teamStats');
-
-        stats.replaceChildren();
-
-        const lines = [
-            'TOTAL DES MEMBRES : ' + total,
-            'NIVEAU 1 : ' + total1,
-            'NIVEAU 2 : ' + total2,
-            'NIVEAU 3 : ' + total3,
-            'COMMISSIONS ÉQUIPE : ' +
-                money(result.commissions_equipe ?? 0),
-            'COMMISSIONS : ' +
-                money(result.commissions ?? 0)
-        ];
-
-        lines.forEach(line => {
-            const p = document.createElement('p');
-            p.textContent = line;
-            stats.appendChild(p);
-        });
-
-        stats.classList.remove('hidden');
-
-        message(
-            'teamMessage',
-            'Équipe actualisée avec succès. ' +
-            total + ' membre(s) répartis sur les trois niveaux.',
-            'success'
-        );
-
-    } catch (err) {
-
-        console.error('Erreur équipe Supabase :', err);
-
-        message(
-            'teamMessage',
-            'Erreur de chargement : ' + friendlyError(err)
-        );
-
-    }
-
-};
+</body>
+</html>
